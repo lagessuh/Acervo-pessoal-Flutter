@@ -1,6 +1,7 @@
 //import 'package:flutter/foundation.dart';
 import 'package:acervo/commons/appbar_ui.dart';
 import 'package:acervo/helpers/responsive.dart';
+import 'package:acervo/pages/acervo/admin_page.dart';
 import 'package:acervo/pages/home/home_page.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter/widgets.dart';
@@ -37,7 +38,7 @@ class _MainPageState extends State<MainPage> {
           child: const AppBarUI()),
       body: [
         const HomePage(), //representa a posição zero da lista
-        const HomePage(), //representa a posição um da lista
+        const AdminPage(), //representa a posição um da lista
         //CommodityListSearchPage(),
         const HomePage(),
         const HomePage(),
