@@ -3,6 +3,7 @@ import 'package:acervo/commons/appbar_ui.dart';
 import 'package:acervo/helpers/responsive.dart';
 import 'package:acervo/pages/acervo/admin_page.dart';
 import 'package:acervo/pages/home/home_page.dart';
+import 'package:acervo/pages/desejo/desejo_list_page.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter/widgets.dart';
 
@@ -37,12 +38,10 @@ class _MainPageState extends State<MainPage> {
               Responsive.isMobile(context) ? 50 : 60),
           child: const AppBarUI()),
       body: [
-        const HomePage(), //representa a posição zero da lista
-        const AdminPage(), //representa a posição um da lista
-        //CommodityListSearchPage(),
         const HomePage(),
+        const AdminPage(),
+        const DesejoListPage(),
         const HomePage(),
-        //ProfilePage(), //representa a posição dois da lista
       ][_selectedIndex],
       bottomNavigationBar: NavigationBar(
         backgroundColor: const Color.fromARGB(172, 214, 198, 255),
@@ -59,16 +58,16 @@ class _MainPageState extends State<MainPage> {
             label: 'Home',
           ),
           NavigationDestination(
-            icon: Icon(Icons.settings_applications),
+            icon: Icon(Icons.book),
             label: 'Acervo',
           ),
           NavigationDestination(
-            icon: Icon(Icons.person_4_rounded),
+            icon: Icon(Icons.favorite),
             label: 'Lista de Desejos',
           ),
           NavigationDestination(
-            icon: Icon(Icons.search_rounded),
-            label: 'Configurações',
+            icon: Icon(Icons.person),
+            label: 'Profile',
           ),
         ],
       ),

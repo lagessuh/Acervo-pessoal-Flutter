@@ -1,11 +1,11 @@
+import 'package:acervo/commons/widgets/my_card_adm/my_card_adm.dart';
 import 'package:acervo/helpers/responsive.dart';
-import 'package:acervo/pages/acervo/acervo_list_search_page.dart';
+import 'package:acervo/pages/item/item_list_page.dart';
+//import 'package:acervo/pages/acervo/acervo_list_search_page.dart';
 import 'package:acervo/pages/aquisicao/aquisicao_list_page.dart';
-import 'package:acervo/pages/categorias/categoria_list_page.dart';
+import 'package:acervo/pages/categoria/categoria_list_page.dart';
 import 'package:acervo/pages/genero/genero_list_page.dart';
 import 'package:flutter/material.dart';
-//import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:acervo/commons/widgets/my_card_adm/my_card_adm.dart';
 
 class AdminPage extends StatefulWidget {
   const AdminPage({super.key});
@@ -15,16 +15,15 @@ class AdminPage extends StatefulWidget {
 }
 
 class _AdminPageState extends State<AdminPage> {
-  var sizeScreen;
-
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
-    debugPrint('Largura da Tela $sizeScreen');
-    setState(() {
-      sizeScreen = MediaQuery.of(context).size.width;
-    });
+
+    // Ajusta a largura dos cards para caberem duas colunas
+    var cardWidth = (width * 0.4); // Ajuste conforme necessário
+    var cardHeight = cardWidth; // Mantém altura igual à largura
+
     return SingleChildScrollView(
       child: Container(
         color: const Color.fromARGB(172, 214, 198, 255),
@@ -35,8 +34,8 @@ class _AdminPageState extends State<AdminPage> {
                   ? height * 0.15
                   : Responsive.isLaptop(context)
                       ? height * 0.18
-                      : Responsive.isLaptop(context)
-                          ? height * 0.15
+                      : Responsive.isMobile(context)
+                          ? height * 0.13
                           : height * 0.13,
               width: Responsive.isDesktop(context)
                   ? width * .9
@@ -90,9 +89,8 @@ class _AdminPageState extends State<AdminPage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(30.0),
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
               child: Container(
-                height: height * 0.9,
                 width: width,
                 decoration: const BoxDecoration(
                   color: Colors.white,
@@ -103,63 +101,95 @@ class _AdminPageState extends State<AdminPage> {
                     bottomRight: Radius.circular(25),
                   ),
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    MyCardAdm(
-                      imageCard: 'assets/images/acervo.png',
-                      nameCard: 'Item',
-                      height: height,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const AcervoListSearchPage() //AcervoListPage(),
-                              ),
-                        );
-                      },
-                    ),
-                    MyCardAdm(
-                      imageCard: 'assets/images/acervo.jpg',
-                      nameCard: 'Gênero',
-                      height: height,
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const GeneroListPage(),
-                        ));
-                      },
-                    ),
-                    MyCardAdm(
-                      imageCard: 'assets/images/acervo.png',
-                      nameCard: 'Categoria',
-                      height: height,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const CategoriaListPage(),
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      // Primeira linha de cards
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          SizedBox(
+                            width: cardWidth,
+                            height: cardHeight,
+                            child: MyCardAdm(
+                              imageCard: 'assets/images/acervo.png',
+                              nameCard: 'Item',
+                              height: cardHeight,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const ItemListPage(),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
-                        );
-                      },
-                    ),
-                    MyCardAdm(
-                      imageCard: 'assets/images/acervo.png',
-                      nameCard: 'Local de Aquisção',
-                      height: height,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const AquisicaoListPage(),
+                          SizedBox(
+                            width: cardWidth,
+                            height: cardHeight,
+                            child: MyCardAdm(
+                              imageCard: 'assets/images/acervo.png',
+                              nameCard: 'Gênero',
+                              height: cardHeight,
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => const GeneroListPage(),
+                                ));
+                              },
+                            ),
                           ),
-                        );
-                      },
-                    ),
-                  ],
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      // Segunda linha de cards
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          SizedBox(
+                            width: cardWidth,
+                            height: cardHeight,
+                            child: MyCardAdm(
+                              imageCard: 'assets/images/acervo.png',
+                              nameCard: 'Categoria',
+                              height: cardHeight,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const CategoriaListPage(),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            width: cardWidth,
+                            height: cardHeight,
+                            child: MyCardAdm(
+                              imageCard: 'assets/images/acervo.png',
+                              nameCard: 'Local de Aquisição',
+                              height: cardHeight,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const AquisicaoListPage(),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

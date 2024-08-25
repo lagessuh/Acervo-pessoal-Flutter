@@ -60,15 +60,18 @@ class MyCardAdm extends StatelessWidget {
                   fit: BoxFit.fill,
                 ),
               ),
+              const SizedBox(
+                height: 60,
+              ),
               Text(
                 nameCard,
                 style: TextStyle(
-                  color: const Color.fromARGB(255, 7, 48, 8),
+                  color: Colors.black,
                   fontSize: Responsive.isDesktop(context)
                       ? 20
                       : Responsive.isTablet(context)
                           ? 18
-                          : 16,
+                          : 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),

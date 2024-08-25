@@ -1,30 +1,30 @@
 import 'package:acervo/helpers/responsive.dart';
-import 'package:acervo/models/aquisicao.dart';
-import 'package:acervo/pages/aquisicao/aquisicao_add_page.dart';
-import 'package:acervo/services/aquisicao_services.dart';
+import 'package:acervo/models/categoria.dart';
+import 'package:acervo/pages/categoria/categoria_add_page.dart';
+import 'package:acervo/services/categoria_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class AquisicaoListPage extends StatefulWidget {
-  const AquisicaoListPage({super.key});
+class CategoriaListPage extends StatefulWidget {
+  const CategoriaListPage({super.key});
 
   @override
-  State<AquisicaoListPage> createState() => _AquisicaoListPageState();
+  State<CategoriaListPage> createState() => _CategoriaListPageState();
 }
 
-class _AquisicaoListPageState extends State<AquisicaoListPage> {
-  final Aquisicao aquisicao = Aquisicao();
+class _CategoriaListPageState extends State<CategoriaListPage> {
+  final Categoria categoria = Categoria();
 
-  final AquisicaoServices aquisicaoServices = AquisicaoServices();
+  final CategoriaServices categoriaServices = CategoriaServices();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Locais de Aquisição'),
+        title: const Text('Categoria'),
       ),
       body: StreamBuilder(
-          stream: aquisicaoServices.getAquisicoes(),
+          stream: categoriaServices.getCategorias(),
           builder: ((context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -77,7 +77,7 @@ class _AquisicaoListPageState extends State<AquisicaoListPage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      const Text('Local de Aquisição:'),
+                                      const Text('Gênero:'),
                                       Text(
                                         '${ds['nome']}',
                                         style: TextStyle(
@@ -108,8 +108,8 @@ class _AquisicaoListPageState extends State<AquisicaoListPage> {
                                   children: [
                                     InkWell(
                                       onTap: () {
-                                        aquisicaoServices
-                                            .deleteAquisicao(ds.id);
+                                        categoriaServices
+                                            .deleteCategoria(ds.id);
                                       },
                                       child: const Icon(
                                         Icons.delete,
@@ -119,8 +119,8 @@ class _AquisicaoListPageState extends State<AquisicaoListPage> {
                                     ),
                                     InkWell(
                                       onTap: () {
-                                        aquisicao.id = ds.id;
-                                        aquisicao.nome = ds['nome'];
+                                        categoria.id = ds.id;
+                                        categoria.nome = ds['nome'];
                                       },
                                       child: const Icon(
                                         Icons.edit,
@@ -147,7 +147,7 @@ class _AquisicaoListPageState extends State<AquisicaoListPage> {
         onPressed: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => const AquisicaoAddPage(),
+              builder: (context) => const CategoriaAddPage(),
             ),
           );
         },

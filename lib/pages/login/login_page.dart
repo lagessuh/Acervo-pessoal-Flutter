@@ -56,7 +56,6 @@ class LoginPage extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              // Espaço entre a imagem e o texto
                               const SizedBox(
                                 width: 20,
                               ),
@@ -97,7 +96,7 @@ class LoginPage extends StatelessWidget {
                               hintText: 'E-mail',
                             ),
                             validator: (email) {
-                              //um validador deve ser chamando no Form
+                              //validador
                               if (!emailValidator(email!)) {
                                 return 'E-mail inválido!!!';
                               }
@@ -130,29 +129,7 @@ class LoginPage extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(
-                          height: 16,
-                        ),
-                        Container(
-                          width: Responsive.isMobile(context) ? 350 : 450,
-                          padding: const EdgeInsets.only(
-                            top: 5,
-                          ),
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: () {},
-                            child: const Text(
-                              'Esqueceu sua senha?',
-                              style: TextStyle(
-                                color: Colors.blue,
-                                fontSize: 16,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 16,
+                          height: 50,
                         ),
                         SizedBox(
                           width: Responsive.isMobile(context) ? 350 : 450,
@@ -191,6 +168,28 @@ class LoginPage extends StatelessWidget {
                                 fontSize: 16,
                                 fontFamily: 'Roboto',
                                 fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                        // const SizedBox(
+                        //   height: 10,
+                        // ),
+                        Container(
+                          width: Responsive.isMobile(context) ? 350 : 450,
+                          padding: const EdgeInsets.only(
+                            top: 5,
+                          ),
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () {},
+                            child: const Text(
+                              'Esqueceu sua senha?',
+                              style: TextStyle(
+                                color: Colors.blue,
+                                fontSize: 16,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w400,
                               ),
                             ),
                           ),

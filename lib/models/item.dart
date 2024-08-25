@@ -1,16 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-
 import 'package:acervo/models/aquisicao.dart';
 import 'package:acervo/models/categoria.dart';
 import 'package:acervo/models/genero.dart';
 import 'package:acervo/models/userlocal.dart';
-//import 'package:cloud_firestore/cloud_firestore.dart';
-//import 'package:flutter/foundation.dart';
-//import 'package:flutter/material.dart';
 
 //id, nome, edicao, autor, tipo, avaliação, ano_lançamento, aquisição, genero, categoria, usuario, data cadastro,
-class Acervo {
+class Item {
   String? id;
   String? nome; //nome do item
   String? edicao; //número da edição
@@ -26,7 +22,7 @@ class Acervo {
   DateTime? data; //data de cadastro
 
   //-- método construtor
-  Acervo(
+  Item(
       {this.id,
       this.nome,
       this.edicao,
@@ -40,7 +36,7 @@ class Acervo {
       this.userlocal,
       this.data});
 
-  Acervo copyWith(
+  Item copyWith(
       {String? id,
       String? nome,
       String? edicao,
@@ -53,7 +49,7 @@ class Acervo {
       Categoria? categoria,
       UserLocal? userlocal,
       DateTime? data}) {
-    return Acervo(
+    return Item(
       id: id ?? this.id,
       nome: nome ?? this.nome,
       edicao: edicao ?? this.edicao,
@@ -79,17 +75,17 @@ class Acervo {
       'tipo': tipo,
       'avaliacao': avaliacao,
       'dataLancamento': dataLancamento,
-      'aquisicao': aquisicao?.toJsonAquisicao(),
-      'genero': genero?.toJsonGenre(),
-      'categoria': categoria?.toJsonCategoria(),
+      'aquisicao': aquisicao?.toMapAquisicaoItem(),
+      'genero': genero?.toMapGeneroItem(),
+      'categoria': categoria?.toMapCategoriaItem(),
       'userlocal': userlocal?.toJsonUser(),
       'data': data,
     };
   }
 
   //-- método que converte dados no formato JSON para o objeto Quote
-  factory Acervo.fromMap(Map<String, dynamic> map) {
-    return Acervo(
+  factory Item.fromMap(Map<String, dynamic> map) {
+    return Item(
         id: map['id'] != null ? map['id'] as String : null,
         nome: map['nome'] != null ? map['nome'] as String : null,
         edicao: map['edicao'] != null ? map['edicao'] as String : null,
@@ -99,8 +95,8 @@ class Acervo {
         dataLancamento: map['dataLancamento'] != null
             ? map['dataLancamento'] as DateTime
             : null,
-        aquisicao: map['aquisição'] != null
-            ? Aquisicao.fromMap(map['aquisição'] as Map<String, dynamic>)
+        aquisicao: map['aquisicao'] != null
+            ? Aquisicao.fromMap(map['aquisicao'] as Map<String, dynamic>)
             : null,
         genero: map['genero'] != null
             ? Genero.fromMap(map['genero'] as Map<String, dynamic>)
@@ -114,21 +110,21 @@ class Acervo {
         data: map['data'] != null ? map['data'] as DateTime : null);
   }
 
-  static List<Acervo> fromJsonList(List list) {
-    return list.map((item) => Acervo.fromJson(item)).toList();
+  static List<Item> fromJsonList(List list) {
+    return list.map((item) => Item.fromJson(item)).toList();
   }
 
   String toJson() => json.encode(toMap());
 
-  factory Acervo.fromJson(String source) =>
-      Acervo.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Item.fromJson(String source) =>
+      Item.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() =>
       'Acervo(id: $id, nome: $nome, edicao: $edicao, autor: $autor, tipo: $tipo, avaliacao: $avaliacao, dataLancamento: $dataLancamento, aquisição: $aquisicao, genero: $genero, categoria: $categoria, userlocal: $userlocal, data: $data)';
 
   @override
-  bool operator ==(covariant Acervo other) {
+  bool operator ==(covariant Item other) {
     if (identical(this, other)) return true;
 
     return other.id == id &&

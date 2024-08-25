@@ -20,7 +20,7 @@ class Aquisicao {
     };
   }
 
-  Map<String, dynamic> toJsonAquisicao() {
+  Map<String, dynamic> toMapAquisicaoItem() {
     return {
       'id': id,
       'nome': nome,

@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:acervo/models/categoria.dart';
 //import 'package:flutter/material.dart';
 
-class Desejos {
+class Desejo {
   String? id;
   String? nome;
   String? autor;
@@ -21,17 +21,17 @@ class Desejos {
   //id, nome, autor, genero, data, atendido
 
   //-- método construtor
-  Desejos(
+  Desejo(
       {this.id, this.nome, this.autor, this.categoria, this.data, this.status});
 
-  Desejos copyWith(
+  Desejo copyWith(
       {String? id,
       String? nome,
       String? autor,
       Categoria? categoria,
       DateTime? data,
       String? status}) {
-    return Desejos(
+    return Desejo(
       id: id ?? this.id,
       nome: nome ?? this.nome,
       autor: autor ?? this.autor,
@@ -47,15 +47,15 @@ class Desejos {
       'id': id,
       'name': nome,
       'author': autor,
-      'categoria': categoria?.toJsonCategoria(),
+      'categoria': categoria?.toMapCategoriaDesejos(),
       'date': data?.toIso8601String(),
       'status': status,
     };
   }
 
   //-- método que converte dados no formato JSON para o objeto Quote
-  factory Desejos.fromMap(Map<String, dynamic> map) {
-    return Desejos(
+  factory Desejo.fromMap(Map<String, dynamic> map) {
+    return Desejo(
       id: map['id'] != null ? map['id'] as String : null,
       categoria: map['categoria'] != null
           ? Categoria.fromMap(map['categoria'] as Map<String, dynamic>)
@@ -76,21 +76,21 @@ class Desejos {
   // }
 
   //verificar linha depois
-  static List<Desejos> fromJsonList(List list) {
-    return list.map((item) => Desejos.fromJson(item)).toList();
+  static List<Desejo> fromJsonList(List list) {
+    return list.map((item) => Desejo.fromJson(item)).toList();
   }
 
   String toJson() => json.encode(toMap());
 
-  factory Desejos.fromJson(String source) =>
-      Desejos.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Desejo.fromJson(String source) =>
+      Desejo.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() =>
       'WishList(id: $id, name: $nome, author: $autor, categories: $categoria, date: $data, status: $status)';
 
   @override
-  bool operator ==(covariant Desejos other) {
+  bool operator ==(covariant Desejo other) {
     if (identical(this, other)) return true;
 
     return other.id == id &&

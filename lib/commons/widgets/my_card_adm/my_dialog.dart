@@ -107,7 +107,7 @@ void _displayPicker(BuildContext context, StateSetter setState) {
               imageGallery(setState); //-- mude aqui
               Navigator.of(context).pop();
             },
-            leading: Icon(Icons.photo_library),
+            leading: const Icon(Icons.photo_library),
             title: const Text(
               'Galeria',
               style: TextStyle(

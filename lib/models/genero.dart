@@ -20,7 +20,7 @@ class Genero {
     };
   }
 
-  Map<String, dynamic> toJsonGenre() {
+  Map<String, dynamic> toMapGeneroItem() {
     return {
       'id': id,
       'nome': nome,
