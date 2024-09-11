@@ -89,7 +89,7 @@ class _AdminPageState extends State<AdminPage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
+              padding: const EdgeInsets.fromLTRB(30, 30, 30, 30),
               child: Container(
                 width: width,
                 decoration: const BoxDecoration(
@@ -113,7 +113,7 @@ class _AdminPageState extends State<AdminPage> {
                             width: cardWidth,
                             height: cardHeight,
                             child: MyCardAdm(
-                              imageCard: 'assets/images/acervo.png',
+                              imageCard: 'assets/images/item.png',
                               nameCard: 'Item',
                               height: cardHeight,
                               onTap: () {
@@ -130,7 +130,7 @@ class _AdminPageState extends State<AdminPage> {
                             width: cardWidth,
                             height: cardHeight,
                             child: MyCardAdm(
-                              imageCard: 'assets/images/acervo.png',
+                              imageCard: 'assets/images/teatro.png',
                               nameCard: 'Gênero',
                               height: cardHeight,
                               onTap: () {
@@ -151,7 +151,7 @@ class _AdminPageState extends State<AdminPage> {
                             width: cardWidth,
                             height: cardHeight,
                             child: MyCardAdm(
-                              imageCard: 'assets/images/acervo.png',
+                              imageCard: 'assets/images/entretenimento.png',
                               nameCard: 'Categoria',
                               height: cardHeight,
                               onTap: () {
@@ -169,7 +169,7 @@ class _AdminPageState extends State<AdminPage> {
                             width: cardWidth,
                             height: cardHeight,
                             child: MyCardAdm(
-                              imageCard: 'assets/images/acervo.png',
+                              imageCard: 'assets/images/placeholder.png',
                               nameCard: 'Local de Aquisição',
                               height: cardHeight,
                               onTap: () {

@@ -20,7 +20,7 @@ class Categoria {
     };
   }
 
-  Map<String, dynamic> toMapCategoriaItem() {
+  Map<String, dynamic> toMapCategoria() {
     return {
       'id': id,
       'nome': nome,

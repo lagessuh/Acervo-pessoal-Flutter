@@ -34,7 +34,7 @@ class AppBarUI extends StatelessWidget {
             onTap: () async {
               UserServices userServices = UserServices();
 
-              bool ok = await userServices.logout();
+              bool ok = await userServices.logOut();
               if (ok) {
                 Navigator.push(
                   context,

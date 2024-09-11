@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:acervo/models/categoria.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 
 class CategoriaServices {
@@ -8,13 +9,15 @@ class CategoriaServices {
   //Obter referência da coleção no firebase
   final CollectionReference _collectionRef =
       FirebaseFirestore.instance.collection('categorias');
+  final FirebaseStorage _storage = FirebaseStorage.instance;
+
   Categoria _categorias = Categoria();
   //método para persistir dados no firebase
   Future<bool> addCategoria({Categoria? categoria}) async {
     try {
       final doc = await _firestore
           .collection('categorias')
-          .add(categoria!.toMapCategoriaItem());
+          .add(categoria!.toMapCategoria());
       _categorias = categoria;
       _categorias.id = doc.id;
       return Future.value(true);
@@ -32,7 +35,7 @@ class CategoriaServices {
     return _firestore
         .collection('categorias')
         .doc(categorias.id)
-        .set(categorias.toMapCategoriaItem());
+        .set(categorias.toMapCategoria());
   }
 
   Future deleteCategoria(String id) async {
@@ -92,5 +95,33 @@ class CategoriaServices {
         nome: doc['nome'],
       );
     }).toList();
+  }
+
+  Future<List<Map<String, dynamic>>> getCategoriaToUser() async {
+    List<Map<String, dynamic>> categorias = <Map<String, dynamic>>[];
+    var doc;
+    // var regions;
+    try {
+      await _firestore.collection("zones").get().then(
+        (querySnapshot) {
+          for (var docSnapshot in querySnapshot.docs) {
+            // print('${docSnapshot.id} => ${docSnapshot.data()}');
+            categorias.add(docSnapshot.data());
+          }
+        },
+        onError: (e) => print("Error completing: $e"),
+      );
+
+      debugPrint('zones - - > $categorias');
+      // return Future.value(regions);
+      return categorias;
+    } on FirebaseException catch (e) {
+      if (e.code != 'OK') {
+        debugPrint('Problemas ao gravar dados do usuário com a imagem');
+      } else if (e.code == 'ABORTED') {
+        debugPrint('Gravação dos dados do usuário foi abortada');
+      }
+      return categorias;
+    }
   }
 }

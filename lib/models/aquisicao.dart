@@ -1,13 +1,12 @@
 //classe para transferência de dados entre camada de visão, RN e entidades
 //DTO => Data Transfer Object
 
+//id, local de aquisição
+
+//método construtor
 class Aquisicao {
   String? id;
   String? nome;
-
-  //id, local de aquisição
-
-  //método construtor
   Aquisicao({
     this.id,
     this.nome,

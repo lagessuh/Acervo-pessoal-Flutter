@@ -57,7 +57,7 @@ class MyCardAdm extends StatelessWidget {
                               : Responsive.isTablet(context)
                                   ? 100
                                   : 80,
-                  fit: BoxFit.fill,
+                  //fit: BoxFit.fill,
                 ),
               ),
               const SizedBox(

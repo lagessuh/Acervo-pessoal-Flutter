@@ -1,59 +1,151 @@
+import 'package:acervo/services/categoria_services.dart';
+import 'package:acervo/utils/exceptions/my_firebase_exceptions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:acervo/models/userlocal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
-class UserServices {
-  //Widget para autenticação do usuário
+class UserServices extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  //Widget para persistência do dados do usuário
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  final UserLocal _userLocal = UserLocal();
+  UserLocal? userLocal = UserLocal();
 
-  //método do tipo get para obter uma referência da coleção no firebase
   CollectionReference get _collectionRef => _firestore.collection('users');
+  DocumentReference get _docRef => _firestore.doc('users/${userLocal!.id!}');
 
-  //método para obter a referência do documento no firebase
-  DocumentReference get _docRef => _firestore.doc('users/${_userLocal.id!}');
-
-  //método de registro de usuário no Firebase
-  signUp(String userName, String email, String password) async {
-    User? user = (await _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    ))
-        .user;
-
-    _userLocal.id = user!.uid;
-    _userLocal.email = user.email;
-    _userLocal.userName = userName;
-
-    saveData();
+  UserServices() {
+    _loadingCurrentUser();
   }
 
-  //método para realizar a autenticação do usuário
-  Future<bool> signIn(String email, String password) async {
-    try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
-      final user = _auth.currentUser;
+  UserLocal? get getUser => userLocal;
+  // Future<bool> signUp({
+  //   required String userName,
+  //   required String email,
+  //   required String password,
+  //   Function? onFail,
+  //   Function? onSuccess,
+  // }) async {
+  //   try {
+  //     UserCredential userCredential =
+  //         await _auth.createUserWithEmailAndPassword(
+  //       email: email,
+  //       password: password,
+  //     );
 
+  //     User? user = userCredential.user;
+  //     if (user != null) {
+  //       UserLocal newUserLocal = UserLocal(
+  //         id: user.uid,
+  //         userName: userName,
+  //         email: email,
+  //         generos: [],
+  //         categorias: [],
+  //         aquisicoes: [],
+  //         itens: [],
+  //         desejos: [],
+  //       );
+  //       await saveData(newUserLocal); // Ensure saveData() is awaited
+
+  //       // Load current user data
+  //       await _loadingCurrentUser(user: user);
+  //       if (onSuccess != null) onSuccess();
+  //       return true;
+  //     } else {
+  //       if (onFail != null) onFail('Failed to create user.');
+  //       return false;
+  //     }
+  //   } on FirebaseAuthException catch (e) {
+  //     if (onFail != null) {
+  //       switch (e.code) {
+  //         case 'user-not-found':
+  //           onFail('Não há usuário registrado com este email');
+  //           break;
+  //         case 'wrong-password':
+  //           onFail('A senha informada não confere');
+  //           break;
+  //         case 'invalid-email':
+  //           onFail('O email informado está com formato inválido');
+  //           break;
+  //         case 'user-disabled':
+  //           onFail('Email do usuário está desabilitado');
+  //           break;
+  //         default:
+  //           onFail('Erro ao criar conta: ${e.message}');
+  //       }
+  //     }
+  //     return false;
+  //   } catch (e) {
+  //     if (onFail != null) onFail('Erro inesperado: $e');
+  //     return false;
+  //   }
+  // }
+
+  Future<bool> signUp(
+      {UserLocal? userLocal,
+      String? userName,
+      String? email,
+      String? password,
+      Function? onFail,
+      Function? onSuccess}) async {
+    try {
+      User? user = (await _auth.createUserWithEmailAndPassword(
+        email: userLocal!.email!,
+        password: password!,
+      ))
+          .user;
+      this.userLocal = userLocal;
+      this.userLocal!.id = user!.uid;
+      saveData();
+
+      _loadingCurrentUser(user: user);
+      onSuccess!();
       return Future.value(true);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        debugPrint('Não há usuário registrado com este email');
+        onFail!('Não há usuário registrado com este email');
       } else if (e.code == 'wrong-password') {
-        debugPrint('A senha informada não confere');
+        onFail!('A senha informada não confere');
       } else if (e.code == 'invalid-email') {
-        debugPrint('O email informado está com formato inválido');
+        onFail!('O email informado está com formato inválido');
       } else if (e.code == 'user-disabled') {
-        debugPrint('Email do usuário está desabilitado');
+        onFail!('Email do usuário está desabilitado');
       }
       return Future.value(false);
     }
   }
 
-  Future<bool> logout() async {
+  signIn(
+      {String? email,
+      String? password,
+      Function? onFail,
+      Function? onSuccess}) async {
+    try {
+      final User? user = (await _auth.signInWithEmailAndPassword(
+              email: email!, password: password!))
+          .user;
+      _loadingCurrentUser(user: user);
+      onSuccess!();
+    } on FirebaseAuthException catch (e) {
+      String fail;
+      if (e.code == 'user-not-found') {
+        fail = ('Não há usuário registrado com este email');
+      } else if (e.code == 'wrong-password') {
+        fail = ('A senha informada não confere');
+      } else if (e.code == 'invalid-email') {
+        fail = ('O email informado está com formato inválido');
+      } else if (e.code == 'user-disabled') {
+        fail = ('Email do usuário está desabilitado');
+      } else {
+        fail = 'Algo na autenticação aconteceu de errado';
+      }
+      onFail!(fail);
+    }
+  }
+
+  Future<bool> logOut() async {
     try {
       await _auth.signOut();
       return Future.value(true);
@@ -62,8 +154,159 @@ class UserServices {
     }
   }
 
+  // Future<void> saveData(UserLocal userLocal) async {
+  //   try {
+  //     await FirebaseFirestore.instance
+  //         .collection('users')
+  //         .doc(userLocal.id)
+  //         .set(userLocal.toJson2());
+  //   } catch (e) {
+  //     print('Erro ao salvar dados do usuário: $e');
+  //   }
+  // }
+  Future<bool> saveData() async {
+    try {
+      await _docRef.set(userLocal!.toJson2());
+      return true;
+    } catch (e) {
+      debugPrint('Erro ao salvar dados: $e');
+      return false;
+    }
+  }
+
+//Método para persistir dados do usuário no firebase firestore
+  updateData(
+      {UserLocal? userLocal, Function? onFail, Function? onSuccess}) async {
+    this.userLocal!.id = userLocal!.id;
+    debugPrint(
+        'atualizando dados do usuário ${userLocal.categorias.toString()}');
+    try {
+      // await _docRef.set(userLocal.toJson());
+      await _firestore
+          .collection('users')
+          .doc(userLocal.id)
+          .set(userLocal.toJsonUser());
+      final DocumentSnapshot docUser =
+          await _firestore.collection('users').doc(this.userLocal!.id).get();
+
+      userLocal = UserLocal.fromDocument(docUser);
+      notifyListeners();
+      onSuccess!();
+    } on MyFirebaseExceptions catch (e) {
+      onFail!(MyFirebaseExceptions(e.code));
+    }
+  }
+
   //Método para persistir dados do usuário no firebase firestore
-  saveData() {
-    _docRef.set(_userLocal.toJson2());
+  updateCategoriasData(
+      {UserLocal? userLocal, Function? onFail, Function? onSuccess}) async {
+    this.userLocal!.id = userLocal!.id;
+    try {
+      // await _docRef.update(userLocal.toJson());
+      _firestore
+          .collection('users')
+          .doc(userLocal.id)
+          .collection('categorias')
+          .add({
+        'categorias': FieldValue.arrayUnion(userLocal.categorias!),
+      });
+      final DocumentSnapshot docUser =
+          await _firestore.collection('users').doc(this.userLocal!.id).get();
+
+      userLocal = UserLocal.fromDocument(docUser);
+      notifyListeners();
+      onSuccess!();
+    } on MyFirebaseExceptions catch (e) {
+      onFail!(MyFirebaseExceptions(e.code));
+    }
+  }
+
+  //--obter usuário conectado
+  // Future<void> _loadingCurrentUser({User? user}) async {
+  //   final User? currentUser = user ?? _auth.currentUser;
+  //   if (currentUser != null && !currentUser.isAnonymous) {
+  //     try {
+  //       // final DocumentSnapshot docUser = await _firestore.collection('users').doc(currentUser.uid).get();
+  //       final DocumentSnapshot docUser =
+  //           await _collectionRef.doc(currentUser.uid).get();
+  //       userLocal = UserLocal.fromDocument(docUser);
+  //       notifyListeners();
+  //     } on FirebaseAuthException catch (e) {
+  //       if (e.code == 'user-not-found') {
+  //         debugPrint('Não há usuário registrado com este email');
+  //       } else if (e.code == 'wrong-password') {
+  //         debugPrint('A senha informada não confere');
+  //       } else if (e.code == 'invalid-email') {
+  //         debugPrint('O email informado está com formato inválido');
+  //       } else if (e.code == 'user-disabled') {
+  //         debugPrint('Email do usuário está desabilitado');
+  //       }
+  //     }
+  //   } else {
+  //     debugPrint('usuário ainda não autenticado');
+  //   }
+  // }
+
+  Future<void> _loadingCurrentUser({User? user}) async {
+    final User? currentUser = user ?? _auth.currentUser;
+
+    if (currentUser != null && !currentUser.isAnonymous) {
+      try {
+        final DocumentSnapshot docUser =
+            await _collectionRef.doc(currentUser.uid).get();
+
+        if (docUser.exists) {
+          userLocal = UserLocal.fromDocument(docUser);
+          notifyListeners();
+        } else {
+          debugPrint('Usuário não encontrado no Firestore');
+        }
+      } catch (e) {
+        debugPrint('Erro ao carregar dados do usuário: $e');
+      }
+    } else {
+      debugPrint('Usuário ainda não autenticado ou é anônimo');
+    }
+  }
+
+  void signOut() {
+    _auth.signOut();
+    userLocal = null;
+    notifyListeners();
+  }
+
+  Future<List<Map<String, dynamic>>> getUserCategorias(
+      UserLocal userlocal) async {
+    List<Map<String, dynamic>> categorias = <Map<String, dynamic>>[];
+    var doc;
+    try {
+      await _firestore
+          .collection('users')
+          .doc(userLocal!.id)
+          .get()
+          .then((value) async {
+        doc = value.data()!;
+        if (doc['categorias'] != null) {
+          List.from(doc['categorias']).forEach((categoria) {
+            categorias.add(categoria);
+          });
+        } else {
+          CategoriaServices regionServices = CategoriaServices();
+          dynamic categoriasUser = await regionServices.getCategoriaToUser();
+          categorias = categoriasUser;
+
+          return categoriasUser;
+        }
+      });
+
+      return categorias;
+    } on FirebaseException catch (e) {
+      if (e.code != 'OK') {
+        debugPrint('Problemas ao gravar dados do usuário com a imagem');
+      } else if (e.code == 'ABORTED') {
+        debugPrint('Gravação dos dados do usuário foi abortada');
+      }
+      return categorias;
+    }
   }
 }

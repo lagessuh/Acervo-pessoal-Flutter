@@ -1,11 +1,10 @@
-//import 'package:flutter/foundation.dart';
 import 'package:acervo/commons/appbar_ui.dart';
 import 'package:acervo/helpers/responsive.dart';
 import 'package:acervo/pages/acervo/admin_page.dart';
 import 'package:acervo/pages/home/home_page.dart';
 import 'package:acervo/pages/desejo/desejo_list_page.dart';
+import 'package:acervo/pages/profile/profile_page.dart';
 import 'package:flutter/material.dart';
-//import 'package:flutter/widgets.dart';
 
 // class MainPage extends StatefulWidget {
 //   const MainPage({super.key});
@@ -41,7 +40,7 @@ class _MainPageState extends State<MainPage> {
         const HomePage(),
         const AdminPage(),
         const DesejoListPage(),
-        const HomePage(),
+        const ProfilePage(),
       ][_selectedIndex],
       bottomNavigationBar: NavigationBar(
         backgroundColor: const Color.fromARGB(172, 214, 198, 255),

@@ -23,7 +23,7 @@ class DesejoListPage extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: const Color.fromARGB(255, 240, 253, 239),
+            color: const Color.fromARGB(172, 214, 198, 255),
             border: const Border()),
         child: Padding(
           padding: const EdgeInsets.symmetric(
@@ -89,6 +89,7 @@ class DesejoListPage extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+          backgroundColor: const Color.fromARGB(255, 101, 85, 143),
           onPressed: () {
             Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => const DesejoAddPage()),

@@ -77,7 +77,7 @@ class Item {
       'dataLancamento': dataLancamento,
       'aquisicao': aquisicao?.toMapAquisicaoItem(),
       'genero': genero?.toMapGeneroItem(),
-      'categoria': categoria?.toMapCategoriaItem(),
+      'categoria': categoria?.toMapCategoria(),
       'userlocal': userlocal?.toJsonUser(),
       'data': data,
     };
