@@ -53,7 +53,7 @@ class Desejo {
     };
   }
 
-  //-- método que converte dados no formato JSON para o objeto Quote
+  //-- método que converte dados no formato JSON para o objeto
   factory Desejo.fromMap(Map<String, dynamic> map) {
     return Desejo(
       id: map['id'] != null ? map['id'] as String : null,

@@ -84,7 +84,6 @@ class DesejoServices {
         .snapshots();
   }
 
-  //método para obter dados da commodity no firebase
   Future<List> searchItemByCategoria(String categoria) async {
     List listCategoria = [];
     final result = await _collectionRef
@@ -95,7 +94,6 @@ class DesejoServices {
         )
         .get();
     listCategoria = result.docs.map((e) => e.data()).toList();
-    // debugPrint('commodity -> ${listCommodities[0].toString()}');
     return listCategoria;
   }
 }

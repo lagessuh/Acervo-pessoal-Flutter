@@ -10,12 +10,25 @@ class GeneroServices {
       FirebaseFirestore.instance.collection('generos');
   Genero _generos = Genero();
   //método para persistir dados no firebase
+  // Future<bool> addGenero({Genero? genero}) async {
+  //   try {
+  //     final docRef =
+  //         await _firestore.collection('generos').add(genero!.toMapGeneroItem());
+  //     _generos = genero;
+  //     _generos.id = doc.id;
+  //     return Future.value(true);
+  //   } on FirebaseException catch (e) {
+  //     debugPrint(e.code.toString());
+  //     return Future.value(false);
+  //   }
+  // }
+
   Future<bool> addGenero({Genero? genero}) async {
     try {
-      final doc =
-          await _firestore.collection('generos').add(genero!.toMapGeneroItem());
-      _generos = genero;
-      _generos.id = doc.id;
+      // Cria um documento com um ID gerado automaticamente
+      final docRef = _firestore.collection('generos').doc();
+      await docRef.set(genero!.toMapGeneroItem());
+      genero.id = docRef.id;
       return Future.value(true);
     } on FirebaseException catch (e) {
       debugPrint(e.code.toString());

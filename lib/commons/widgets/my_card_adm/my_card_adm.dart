@@ -1,5 +1,4 @@
 import 'package:acervo/helpers/responsive.dart';
-//import 'package:acervo/pages/commodity/commodity_list_search_page.dart';
 import 'package:flutter/material.dart';
 
 class MyCardAdm extends StatelessWidget {

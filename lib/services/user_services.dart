@@ -291,8 +291,8 @@ class UserServices extends ChangeNotifier {
             categorias.add(categoria);
           });
         } else {
-          CategoriaServices regionServices = CategoriaServices();
-          dynamic categoriasUser = await regionServices.getCategoriaToUser();
+          CategoriaServices categoriaServices = CategoriaServices();
+          dynamic categoriasUser = await categoriaServices.getCategoriaToUser();
           categorias = categoriasUser;
 
           return categoriasUser;

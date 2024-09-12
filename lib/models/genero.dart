@@ -1,17 +1,26 @@
 //classe para transferência de dados entre camada de visão, RN e entidades
 //DTO => Data Transfer Object
 
+//id, genero
+
+//método construtor
 class Genero {
   String? id;
   String? nome;
-
-  //id, genero
-
-  //método construtor
   Genero({
     this.id,
     this.nome,
   });
+
+  Genero copyWith({
+    String? id,
+    String? nome,
+  }) {
+    return Genero(
+      id: id ?? this.id,
+      nome: nome ?? this.nome,
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -39,7 +48,7 @@ class Genero {
   }
 
   ///this method will prevent the override of toString
-  String commodityAsString() {
+  String generoAsString() {
     return '#$id $nome';
   }
 

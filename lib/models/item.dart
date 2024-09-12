@@ -13,13 +13,13 @@ class Item {
   String? autor; //nome do autor ou desenvolvedor do item
   String? tipo; //se o item é físico ou digital
   String? avaliacao; //avaliação do item
-  DateTime? dataLancamento; //data de lançamento
+  String? dataLancamento; //data de lançamento
   Aquisicao? aquisicao = Aquisicao(); //local ou forma que o item foi adquirido
   Genero? genero = Genero(); //Gênero do item (ex. ação, terror, romance)...
   Categoria? categoria =
       Categoria(); //Categoria do item(ex. filme, livro, DVDs). Descrição do que ele é
   UserLocal? userlocal = UserLocal(); //usuario que realizou o cadastro
-  DateTime? data; //data de cadastro
+  String? data; //data de cadastro
 
   //-- método construtor
   Item(
@@ -43,12 +43,12 @@ class Item {
       String? autor,
       String? tipo,
       String? avaliacao,
-      DateTime? dataLancamento,
+      String? dataLancamento,
       Aquisicao? aquisicao,
       Genero? genero,
       Categoria? categoria,
       UserLocal? userlocal,
-      DateTime? data}) {
+      String? data}) {
     return Item(
       id: id ?? this.id,
       nome: nome ?? this.nome,
@@ -83,7 +83,7 @@ class Item {
     };
   }
 
-  //-- método que converte dados no formato JSON para o objeto Quote
+  //-- método que converte dados no formato JSON para o objeto
   factory Item.fromMap(Map<String, dynamic> map) {
     return Item(
         id: map['id'] != null ? map['id'] as String : null,
@@ -93,7 +93,7 @@ class Item {
         tipo: map['tipo'] != null ? map['tipo'] as String : null,
         avaliacao: map['avaliacao'] != null ? map['avaliacao'] as String : null,
         dataLancamento: map['dataLancamento'] != null
-            ? map['dataLancamento'] as DateTime
+            ? map['dataLancamento'] as String
             : null,
         aquisicao: map['aquisicao'] != null
             ? Aquisicao.fromMap(map['aquisicao'] as Map<String, dynamic>)
@@ -107,7 +107,7 @@ class Item {
         userlocal: map['userlocal'] != null
             ? UserLocal.fromMap(map['userlocal'] as Map<String, dynamic>)
             : null,
-        data: map['data'] != null ? map['data'] as DateTime : null);
+        data: map['data'] != null ? map['data'] as String : null);
   }
 
   static List<Item> fromJsonList(List list) {
@@ -121,7 +121,7 @@ class Item {
 
   @override
   String toString() =>
-      'Acervo(id: $id, nome: $nome, edicao: $edicao, autor: $autor, tipo: $tipo, avaliacao: $avaliacao, dataLancamento: $dataLancamento, aquisição: $aquisicao, genero: $genero, categoria: $categoria, userlocal: $userlocal, data: $data)';
+      'Item(id: $id, nome: $nome, edicao: $edicao, autor: $autor, tipo: $tipo, avaliacao: $avaliacao, dataLancamento: $dataLancamento, aquisição: $aquisicao, genero: $genero, categoria: $categoria, userlocal: $userlocal, data: $data)';
 
   @override
   bool operator ==(covariant Item other) {

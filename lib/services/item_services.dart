@@ -1,4 +1,6 @@
+import 'package:acervo/models/categoria.dart';
 import 'package:acervo/models/item.dart';
+import 'package:acervo/models/userlocal.dart';
 import 'package:acervo/utils/exceptions/my_firebase_auth_exceptions.dart';
 import 'package:acervo/utils/exceptions/my_firebase_exceptions.dart';
 import 'package:acervo/utils/exceptions/my_platform_exception.dart';
@@ -12,18 +14,36 @@ class ItemServices {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   //Obter referência da coleção no firebase
   final CollectionReference _collectionRef =
-      FirebaseFirestore.instance.collection('item');
-  Item _item = Item();
+      FirebaseFirestore.instance.collection('itens');
+  Item _itens = Item();
   //método para persistir dados no firebase
   Future<bool> addItem({Item? item}) async {
     try {
-      final doc = await _firestore.collection('item').add(item!.toMap());
-      _item = item;
-      _item.id = doc.id;
+      final doc = await _firestore.collection('itens').add(item!.toMap());
+      _itens = item;
+      _itens.id = doc.id;
       return Future.value(true);
     } on FirebaseException catch (e) {
       debugPrint(e.code.toString());
       return Future.value(false);
+    }
+  }
+
+  Stream<QuerySnapshot> getItensByUser(UserLocal userLocal) {
+    try {
+      return _collectionRef
+          .where('userLocal.id', isEqualTo: userLocal.id)
+          .snapshots();
+    } on FirebaseAuthException catch (e) {
+      throw MyFirebaseAuthExceptions(e.code).message;
+    } on FirebaseException catch (e) {
+      throw MyFirebaseExceptions(e.code).message;
+    } on PlatformException catch (e) {
+      throw MyPlatformExceptions(e.code).message;
+    } catch (e) {
+      if (kDebugMode)
+        debugPrint('Algo está errado. Por favor, tente novamente');
+      rethrow;
     }
   }
 
@@ -52,22 +72,22 @@ class ItemServices {
 //ajustar data
     return _collectionRef
         .where('createdAt', isLessThan: now, isGreaterThan: yesterday)
-        .orderBy('item')
+        .orderBy('itens')
         .snapshots();
   }
 
   Future updateItem(Item item) async {
-    return _firestore.collection('item').doc(item.id).set(item.toMap());
+    return _firestore.collection('itens').doc(item.id).set(item.toMap());
   }
 
-  Future deleteQuote(String id) async {
-    return _firestore.collection('item').doc(id).delete();
+  Future deleteItem(String id) async {
+    return _firestore.collection('itens').doc(id).delete();
   }
 
   Future<QuerySnapshot<Map<String, dynamic>>> getAllItem(
       String searchKey) async {
     var data = await _firestore
-        .collection('item')
+        .collection('categorias')
         .where('categoria', isGreaterThanOrEqualTo: searchKey)
         .where('categoria', isLessThan: '${searchKey}z')
         .orderBy('categoria')
@@ -77,14 +97,14 @@ class ItemServices {
 
   Stream<QuerySnapshot> getItem2(String? searchKey) {
     return _collectionRef
-        .orderBy('region')
+        .orderBy('categorias')
         .where('categoria', isGreaterThanOrEqualTo: searchKey)
         .where('categoria', isLessThan: '${searchKey!}z')
         .orderBy('categoria')
         .snapshots();
   }
 
-  //método para obter dados da commodity no firebase
+  //método para obter dados no firebase
   Future<List> searchItemByCategoria(String categoria) async {
     List listCategoria = [];
     final result = await _collectionRef
@@ -95,7 +115,127 @@ class ItemServices {
         )
         .get();
     listCategoria = result.docs.map((e) => e.data()).toList();
-    // debugPrint('commodity -> ${listCommodities[0].toString()}');
     return listCategoria;
+  }
+
+  //lista da homepage
+  Stream<List<Item>> getItens({List<String>? categorias, String? searchText}) {
+    Query query =
+        _firestore.collection('itens').orderBy('data', descending: true);
+
+    if (categorias != null && categorias.isNotEmpty) {
+      query = query.where('categoria.id', whereIn: categorias);
+    }
+
+    if (searchText != null && searchText.isNotEmpty) {
+      query = query
+          .where('nome', isGreaterThanOrEqualTo: searchText)
+          .where('nome', isLessThanOrEqualTo: searchText + '\uf8ff');
+    }
+
+    return query.snapshots().map((snapshot) => snapshot.docs.map((doc) {
+          final data = doc.data();
+          if (data != null) {
+            return Item.fromMap(data as Map<String, dynamic>);
+          } else {
+            throw Exception("Item data is null");
+          }
+        }).toList());
+  }
+
+  // Método para buscar os itens mais recentes
+  Future<List<Item>> getItensRecentes() async {
+    try {
+      final collectionRef = _firestore.collection('itens');
+      final snapshot =
+          await collectionRef.orderBy('data', descending: true).limit(10).get();
+
+      if (snapshot.docs.isEmpty) {
+        print("Nenhum item encontrado. A coleção pode ainda não existir.");
+        return [];
+      }
+
+      return snapshot.docs
+          .map((doc) => Item.fromMap(doc.data() as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      print("Erro ao buscar itens recentes: $e");
+      throw Exception('Erro ao buscar itens recentes: $e');
+    }
+  }
+
+  // Future<List<Item>> getItensRecentes() async {
+  //   try {
+  //     QuerySnapshot snapshot = await _firestore
+  //         .collection('itens')
+  //         .orderBy('data', descending: true)
+  //         .limit(10)
+  //         .get();
+
+  //     // Verifica se há documentos retornados
+  //     if (snapshot.docs.isEmpty) {
+  //       // Você pode tratar o caso onde não há itens, se necessário
+  //       return [];
+  //     }
+
+  //     return snapshot.docs
+  //         .map((doc) => Item.fromMap(doc.data() as Map<String, dynamic>))
+  //         .toList();
+  //   } catch (e) {
+  //     throw Exception('Erro ao buscar itens recentes: $e');
+  //   }
+  // }
+
+  // Método para buscar itens filtrados por categoria e texto
+  Future<List<Item>> getItensFiltrados(
+      List<Categoria> categorias, String searchText) async {
+    try {
+      Query query = _firestore.collection('itens');
+
+      if (categorias.isNotEmpty) {
+        List<String> categoriaIds = categorias.map((e) => e.id!).toList();
+        query = query.where('categoria.id', whereIn: categoriaIds);
+      }
+
+      if (searchText.isNotEmpty) {
+        query = query
+            .where('nome', isGreaterThanOrEqualTo: searchText)
+            .where('nome', isLessThanOrEqualTo: searchText + '\uf8ff');
+      }
+
+      QuerySnapshot snapshot = await query.get();
+
+      return snapshot.docs
+          .map((doc) => Item.fromMap(doc.data() as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      throw Exception('Erro ao filtrar itens: $e');
+    }
+  }
+
+  // Stream<List<Item>> getItens({List<String>? categorias, String? searchText}) {
+  //   Query query =
+  //       _firestore.collection('itens').orderBy('data', descending: true);
+
+  //   if (categorias != null && categorias.isNotEmpty) {
+  //     query = query.where('categoria.id', whereIn: categorias);
+  //   }
+
+  //   if (searchText != null && searchText.isNotEmpty) {
+  //     query = query
+  //         .where('nome', isGreaterThanOrEqualTo: searchText)
+  //         .where('nome', isLessThanOrEqualTo: searchText + '\uf8ff');
+  //   }
+
+  //   return query.snapshots().map((snapshot) =>
+  //       snapshot.docs.map((doc) => Item.fromMap(doc.data())).toList());
+  // }
+
+  //busca categorias
+  Future<List<Categoria>> getAllCategorias() async {
+    final querySnapshot = await _firestore.collection('categorias').get();
+    return querySnapshot.docs
+        .map((doc) => Categoria.fromMap(doc.data() as Map<String, dynamic>))
+        .toList();
   }
 }

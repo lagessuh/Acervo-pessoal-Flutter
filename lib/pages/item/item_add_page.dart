@@ -2,7 +2,7 @@ import 'package:acervo/models/aquisicao.dart';
 import 'package:acervo/models/categoria.dart';
 import 'package:acervo/models/genero.dart';
 import 'package:acervo/models/item.dart';
-import 'package:acervo/commons/utils.dart';
+//import 'package:acervo/commons/utils.dart';
 import 'package:acervo/services/aquisicao_services.dart';
 import 'package:acervo/services/categoria_services.dart';
 import 'package:acervo/services/genero_services.dart';
@@ -11,7 +11,7 @@ import 'package:acervo/services/user_services.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:intl/intl.dart';
+//import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class ItemAddPage extends StatefulWidget {
@@ -29,6 +29,9 @@ class _ItemAddPageState extends State<ItemAddPage> {
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _edicaoController = TextEditingController();
   final TextEditingController _autorController = TextEditingController();
+  final TextEditingController _dataController = TextEditingController();
+  final TextEditingController _dataLancamentoController =
+      TextEditingController();
 
   // Listas para os dropdowns
   List<String> tiposDeItem = ['Físico', 'Digital'];
@@ -146,16 +149,6 @@ class _ItemAddPageState extends State<ItemAddPage> {
                               value; // Atualiza o valor de avaliação no item
                         }
                       },
-                    ),
-                    const SizedBox(height: 20),
-                    TextField(
-                      controller: _autorController,
-                      decoration: const InputDecoration(hintText: 'Autor'),
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 1, 17, 1),
-                      ),
                     ),
                     const SizedBox(height: 20),
                     //-- dropdown dos locais de aquisicao
@@ -278,158 +271,231 @@ class _ItemAddPageState extends State<ItemAddPage> {
                         return null;
                       },
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              //-- data de cadastro (campo texto)
-                              Expanded(
-                                child: TextFormField(
-                                  initialValue: Utilities.getDateTime(),
-                                  decoration: InputDecoration(
-                                    label: const Text(
-                                      'Data de Cadastro',
-                                      selectionColor: Colors.white,
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                        color: Color.fromARGB(255, 0, 12, 1),
-                                      ),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                        color: Color.fromARGB(255, 0, 12, 1),
-                                      ),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                  onSaved: (value) {
-                                    //-- definindo padrão de entrada para a data
-                                    var inputFormat = DateFormat('dd-MM-yyyy');
-                                    //-- conversão do dado da variável "value" de String para data (DateTime)
-                                    var inputDate = inputFormat.parse(value!);
-                                    //-- formato do padrão inglês (americano) para o padrão brasileiro (pt_BR)
-                                    DateFormat outputFormat =
-                                        DateFormat('yyyy-MM-dd', 'pt_BR');
-                                    //-- convertendo para o formato brasileiro
-                                    var outDate =
-                                        outputFormat.format(inputDate);
-                                    //-converte a data em formato String para o formato DateTime
-                                    DateTime now = DateTime.parse(outDate);
-                                    item.data = now;
-                                  },
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 15,
-                              ),
-                              //-- data de lançamento (campo texto)
-                              Expanded(
-                                child: TextFormField(
-                                  initialValue: Utilities.getDateTime(),
-                                  decoration: InputDecoration(
-                                    label: const Text(
-                                      'Data de Lançamento',
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                        color: Color.fromARGB(255, 0, 12, 1),
-                                      ),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                        color: Color.fromARGB(255, 0, 12, 1),
-                                      ),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                  onSaved: (value) {
-                                    //-- definindo padrão de entrada para a data
-                                    var inputFormat = DateFormat('dd-MM-yyyy');
-                                    //-- conversão do dado da variável "value" de String para data (DateTime)
-                                    var inputDate = inputFormat.parse(value!);
-                                    //-- formato do padrão inglês (americano) para o padrão brasileiro (pt_BR)
-                                    DateFormat outputFormat =
-                                        DateFormat('yyyy-MM-dd', 'pt_BR');
-                                    //-- convertendo para o formato brasileiro
-                                    var outDate =
-                                        outputFormat.format(inputDate);
-                                    //-converte a data em formato String para o formato DateTime
-                                    DateTime now = DateTime.parse(outDate);
-                                    item.dataLancamento = now;
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Row(
-                            children: [
-                              //-- botão para fechar
-                              Expanded(
-                                  child: ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: const Text('Sair'))),
-                              const SizedBox(
-                                width: 15,
-                              ),
-                              //-- botão para salver cotações
-                              Expanded(
-                                  child: ElevatedButton(
-                                      onPressed: () async {
-                                        //-- popular a classe de dados da cotação com os dados da UI
-                                        if (_formKey.currentState!.validate()) {
-                                          _formKey.currentState!.save();
-                                          ItemServices itemServices =
-                                              ItemServices();
-                                          bool ok = await itemServices.addItem(
-                                              item: item);
-                                          if (ok) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(SnackBar(
-                                              content: const Text(
-                                                  'Dados do item foram gravados com sucesso'),
-                                              backgroundColor:
-                                                  Colors.amberAccent[400],
-                                              duration:
-                                                  const Duration(seconds: 5),
-                                            ));
-                                            myToastDialog(
-                                                msg:
-                                                    'Item gravado com sucesso!!!');
-                                          } else {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(SnackBar(
-                                              content: const Text(
-                                                  'Problemas ao gravar dados do item'),
-                                              backgroundColor:
-                                                  Colors.amberAccent[400],
-                                              duration:
-                                                  const Duration(seconds: 5),
-                                            ));
-                                            myToastDialog(
-                                                msg:
-                                                    'Item cadastrado com sucesso!!!');
-                                          }
-                                        }
-                                      },
-                                      child: const Text('Salvar'))),
-                            ],
-                          )
-                        ],
+                    const SizedBox(height: 20),
+                    TextField(
+                      controller: _dataController,
+                      decoration:
+                          const InputDecoration(hintText: 'Data de Cadastro'),
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 1, 17, 1),
                       ),
+                    ),
+                    const SizedBox(height: 20),
+                    TextField(
+                      controller: _dataLancamentoController,
+                      decoration:
+                          const InputDecoration(hintText: 'Data de Lançamento'),
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 1, 17, 1),
+                      ),
+                    ),
+                    const SizedBox(height: 50),
+                    Row(
+                      children: [
+                        //-- botão para fechar
+                        Expanded(
+                            child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Sair'))),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        Expanded(
+                            child: ElevatedButton(
+                                onPressed: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    _formKey.currentState!.save();
+                                    ItemServices itemServices = ItemServices();
+                                    bool ok =
+                                        await itemServices.addItem(item: item);
+                                    if (ok) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: const Text(
+                                            'Dados do item foram gravados com sucesso'),
+                                        backgroundColor:
+                                            Colors.amberAccent[400],
+                                        duration: const Duration(seconds: 5),
+                                      ));
+                                      myToastDialog(
+                                          msg: 'Item gravado com sucesso!!!');
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: const Text(
+                                            'Problemas ao gravar dados do item'),
+                                        backgroundColor:
+                                            Colors.amberAccent[400],
+                                        duration: const Duration(seconds: 5),
+                                      ));
+                                      myToastDialog(
+                                          msg:
+                                              'Item cadastrado com sucesso!!!');
+                                    }
+                                  }
+                                },
+                                child: const Text('Salvar'))),
+                      ],
                     )
+
+                    // Padding(
+                    //   padding: const EdgeInsets.only(top: 20.0),
+                    //   child: Column(
+                    //     children: [
+                    //       Row(
+                    //         children: [
+                    //           //-- data de cadastro (campo texto)
+                    //           Expanded(
+                    //             child: TextFormField(
+                    //               initialValue: Utilities.getDateTime(),
+                    //               decoration: InputDecoration(
+                    //                 label: const Text(
+                    //                   'Data de Cadastro',
+                    //                   selectionColor: Colors.white,
+                    //                 ),
+                    //                 enabledBorder: OutlineInputBorder(
+                    //                   borderSide: const BorderSide(
+                    //                     color: Color.fromARGB(255, 0, 12, 1),
+                    //                   ),
+                    //                   borderRadius: BorderRadius.circular(10),
+                    //                 ),
+                    //                 border: OutlineInputBorder(
+                    //                   borderSide: const BorderSide(
+                    //                     color: Color.fromARGB(255, 0, 12, 1),
+                    //                   ),
+                    //                   borderRadius: BorderRadius.circular(10),
+                    //                 ),
+                    //               ),
+                    //               onSaved: (value) {
+                    //                 //-- definindo padrão de entrada para a data
+                    //                 var inputFormat = DateFormat('dd-MM-yyyy');
+                    //                 //-- conversão do dado da variável "value" de String para data (DateTime)
+                    //                 var inputDate = inputFormat.parse(value!);
+                    //                 //-- formato do padrão inglês (americano) para o padrão brasileiro (pt_BR)
+                    //                 DateFormat outputFormat =
+                    //                     DateFormat('yyyy-MM-dd', 'pt_BR');
+                    //                 //-- convertendo para o formato brasileiro
+                    //                 var outDate =
+                    //                     outputFormat.format(inputDate);
+                    //                 //-converte a data em formato String para o formato DateTime
+                    //                 DateTime now = DateTime.parse(outDate);
+                    //                 item.data = now;
+                    //               },
+                    //             ),
+                    //           ),
+                    //           const SizedBox(
+                    //             width: 15,
+                    //           ),
+                    //           // data de lançamento (campo texto)
+                    //           Expanded(
+                    //             child: TextFormField(
+                    //               initialValue: Utilities.getDateTime(),
+                    //               decoration: InputDecoration(
+                    //                 label: const Text(
+                    //                   'Data de Lançamento',
+                    //                 ),
+                    //                 enabledBorder: OutlineInputBorder(
+                    //                   borderSide: const BorderSide(
+                    //                     color: Color.fromARGB(255, 0, 12, 1),
+                    //                   ),
+                    //                   borderRadius: BorderRadius.circular(10),
+                    //                 ),
+                    //                 border: OutlineInputBorder(
+                    //                   borderSide: const BorderSide(
+                    //                     color: Color.fromARGB(255, 0, 12, 1),
+                    //                   ),
+                    //                   borderRadius: BorderRadius.circular(10),
+                    //                 ),
+                    //               ),
+                    //               onSaved: (value) {
+                    //                 //-- definindo padrão de entrada para a data
+                    //                 var inputFormat = DateFormat('dd-MM-yyyy');
+                    //                 //-- conversão do dado da variável "value" de String para data (DateTime)
+                    //                 var inputDate = inputFormat.parse(value!);
+                    //                 //-- formato do padrão inglês (americano) para o padrão brasileiro (pt_BR)
+                    //                 DateFormat outputFormat =
+                    //                     DateFormat('yyyy-MM-dd', 'pt_BR');
+                    //                 //-- convertendo para o formato brasileiro
+                    //                 var outDate =
+                    //                     outputFormat.format(inputDate);
+                    //                 //-converte a data em formato String para o formato DateTime
+                    //                 DateTime now = DateTime.parse(outDate);
+                    //                 item.dataLancamento = now;
+                    //               },
+                    //             ),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //       const SizedBox(
+                    //         height: 15,
+                    //       ),
+                    //       const SizedBox(
+                    //         height: 20,
+                    //       ),
+
+                    //       //botão de salvar
+                    //       Row(
+                    //         children: [
+                    //           //-- botão para fechar
+                    //           Expanded(
+                    //               child: ElevatedButton(
+                    //                   onPressed: () {
+                    //                     Navigator.of(context).pop();
+                    //                   },
+                    //                   child: const Text('Sair'))),
+                    //           const SizedBox(
+                    //             width: 15,
+                    //           ),
+                    //           Expanded(
+                    //               child: ElevatedButton(
+                    //                   onPressed: () async {
+                    //                     if (_formKey.currentState!.validate()) {
+                    //                       _formKey.currentState!.save();
+                    //                       ItemServices itemServices =
+                    //                           ItemServices();
+                    //                       bool ok = await itemServices.addItem(
+                    //                           item: item);
+                    //                       if (ok) {
+                    //                         ScaffoldMessenger.of(context)
+                    //                             .showSnackBar(SnackBar(
+                    //                           content: const Text(
+                    //                               'Dados do item foram gravados com sucesso'),
+                    //                           backgroundColor:
+                    //                               Colors.amberAccent[400],
+                    //                           duration:
+                    //                               const Duration(seconds: 5),
+                    //                         ));
+                    //                         myToastDialog(
+                    //                             msg:
+                    //                                 'Item gravado com sucesso!!!');
+                    //                       } else {
+                    //                         ScaffoldMessenger.of(context)
+                    //                             .showSnackBar(SnackBar(
+                    //                           content: const Text(
+                    //                               'Problemas ao gravar dados do item'),
+                    //                           backgroundColor:
+                    //                               Colors.amberAccent[400],
+                    //                           duration:
+                    //                               const Duration(seconds: 5),
+                    //                         ));
+                    //                         myToastDialog(
+                    //                             msg:
+                    //                                 'Item cadastrado com sucesso!!!');
+                    //                       }
+                    //                     }
+                    //                   },
+                    //                   child: const Text('Salvar'))),
+                    //         ],
+                    //       )
+                    //     ],
+                    //   ),
+                    // )
                   ],
                 ),
               ),

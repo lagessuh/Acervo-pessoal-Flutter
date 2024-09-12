@@ -20,7 +20,6 @@ class DesejoAddPage extends StatefulWidget {
 class _DesejoAddPageState extends State<DesejoAddPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   CategoriaServices categoriaServices = CategoriaServices();
-  //-- criando variável para instanciar a classe de dados da cotação
   Desejo desejo = Desejo();
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _autorController = TextEditingController();
@@ -78,7 +77,6 @@ class _DesejoAddPageState extends State<DesejoAddPage> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        //-- dropdown para commodity
                         DropdownSearch<Categoria>(
                           popupProps: PopupPropsMultiSelection.menu(
                             itemBuilder: _listCategoria,
@@ -221,39 +219,36 @@ class _DesejoAddPageState extends State<DesejoAddPage> {
                                   Expanded(
                                     child: ElevatedButton(
                                       onPressed: () async {
-                                        //-- popular a classe de dados da cotação com os dados da UI
                                         if (_formKey.currentState!.validate()) {
                                           _formKey.currentState!.save();
-                                          DesejoServices quoteServices =
+                                          DesejoServices desejoServices =
                                               DesejoServices();
-                                          bool ok = await quoteServices
+                                          bool ok = await desejoServices
                                               .addDesejo(desejo: desejo);
                                           if (ok) {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(SnackBar(
                                               content: const Text(
-                                                  'Dados da cotação foram gravados com sucesso'),
+                                                  'Dados foram gravados com sucesso'),
                                               backgroundColor:
                                                   Colors.amberAccent[400],
                                               duration:
                                                   const Duration(seconds: 5),
                                             ));
                                             myToastDialog(
-                                                msg:
-                                                    'Cotação gravada com sucesso!!!');
+                                                msg: 'Gravado com sucesso!!!');
                                           } else {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(SnackBar(
                                               content: const Text(
-                                                  'Problemas ao gravar dados da cotação'),
+                                                  'Problemas ao gravar dados'),
                                               backgroundColor:
                                                   Colors.amberAccent[400],
                                               duration:
                                                   const Duration(seconds: 5),
                                             ));
                                             myToastDialog(
-                                                msg:
-                                                    'Cotação gravada com sucesso!!!');
+                                                msg: 'Gravado com sucesso!!!');
                                           }
                                         }
                                       },

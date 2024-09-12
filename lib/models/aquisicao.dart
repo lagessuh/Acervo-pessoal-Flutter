@@ -38,7 +38,7 @@ class Aquisicao {
   }
 
   ///this method will prevent the override of toString
-  String commodityAsString() {
+  String aquisicaoAsString() {
     return '#$id $nome';
   }
 

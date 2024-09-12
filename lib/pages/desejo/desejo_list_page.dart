@@ -56,24 +56,6 @@ class DesejoListPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text('Categoria: ${ds['categoria']['nome']}'),
-                              Row(
-                                children: [
-                                  Text('Cidade: ${ds['region']['city']}'),
-                                  const SizedBox(
-                                    width: 15,
-                                  ),
-                                  Text('UF: ${ds['region']['state']}'),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text('Cotação: R\$ ${ds['amount']}'),
-                                  Text(
-                                      'Dia da Cotação: ${dateFormat.format(dateTime)}'),
-                                ],
-                              ),
                             ],
                           ),
                         ),

@@ -100,7 +100,7 @@ class CategoriaServices {
   Future<List<Map<String, dynamic>>> getCategoriaToUser() async {
     List<Map<String, dynamic>> categorias = <Map<String, dynamic>>[];
     var doc;
-    // var regions;
+
     try {
       await _firestore.collection("zones").get().then(
         (querySnapshot) {
@@ -113,7 +113,7 @@ class CategoriaServices {
       );
 
       debugPrint('zones - - > $categorias');
-      // return Future.value(regions);
+
       return categorias;
     } on FirebaseException catch (e) {
       if (e.code != 'OK') {

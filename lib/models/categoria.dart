@@ -46,7 +46,7 @@ class Categoria {
   }
 
   ///this method will prevent the override of toString
-  String commodityAsString() {
+  String categoriaAsString() {
     return '#$id $nome';
   }
 
