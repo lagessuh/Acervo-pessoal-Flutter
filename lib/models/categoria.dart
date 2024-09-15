@@ -1,5 +1,8 @@
 //classe para transferência de dados entre camada de visão, RN e entidades
 //DTO => Data Transfer Object
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 
 class Categoria {
   String? id;
@@ -13,12 +16,22 @@ class Categoria {
     this.nome,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'nome': nome,
-    };
+  Categoria copyWith({
+    String? id,
+    String? nome,
+  }) {
+    return Categoria(
+      id: id ?? this.id,
+      nome: nome ?? this.nome,
+    );
   }
+
+  // Map<String, dynamic> toJson() {
+  //   return {
+  //     'id': id,
+  //     'nome': nome,
+  //   };
+  // }
 
   Map<String, dynamic> toMapCategoria() {
     return {
@@ -34,9 +47,9 @@ class Categoria {
     };
   }
 
-  Categoria.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        nome = json['nome'];
+  // Categoria.fromJson(Map<String, dynamic> json)
+  //     : id = json['id'],
+  //       nome = json['nome'];
 
   factory Categoria.fromMap(Map<String, dynamic> map) {
     return Categoria(
@@ -44,6 +57,19 @@ class Categoria {
       nome: map['nome'] != null ? map['nome'] as String : null,
     );
   }
+
+  factory Categoria.fromMap2(Map<String, dynamic> map) {
+    return Categoria(
+      id: map['id'],
+      nome: map['nome'],
+    );
+  }
+
+  String toJson() => json.encode(toMapCategoriaDesejos());
+  factory Categoria.fromJson(String source) =>
+      Categoria.fromMap(json.decode(source));
+  factory Categoria.fromJson2(String source) =>
+      Categoria.fromMap2(json.decode(source));
 
   ///this method will prevent the override of toString
   String categoriaAsString() {

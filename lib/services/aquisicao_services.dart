@@ -10,13 +10,34 @@ class AquisicaoServices {
       FirebaseFirestore.instance.collection('aquisicoes');
   Aquisicao _aquisicoes = Aquisicao();
   //método para persistir dados no firebase
+  // Future<bool> addAquisicao({Aquisicao? aquisicao}) async {
+  //   try {
+  //     final doc = await _firestore
+  //         .collection('aquisicoes')
+  //         .add(aquisicao!.toMapAquisicaoItem());
+  //     _aquisicoes = aquisicao;
+  //     _aquisicoes.id = doc.id;
+  //     return Future.value(true);
+  //   } on FirebaseException catch (e) {
+  //     debugPrint(e.code.toString());
+  //     return Future.value(false);
+  //   }
+  // }
+
   Future<bool> addAquisicao({Aquisicao? aquisicao}) async {
     try {
-      final doc = await _firestore
-          .collection('aquisicoes')
-          .add(aquisicao!.toMapAquisicaoItem());
+      // Cria um documento com um ID gerado automaticamente
+      final docRef = _firestore.collection('aquisicoes').doc();
+
+      // Atribui o ID gerado ao objeto 'aquisicao'
+      aquisicao!.id = docRef.id;
+
+      // Grava a aquisição no Firestore usando o ID gerado
+      await docRef.set(aquisicao.toMapAquisicaoItem());
+
+      // Atualiza a instância local, se necessário
       _aquisicoes = aquisicao;
-      _aquisicoes.id = doc.id;
+
       return Future.value(true);
     } on FirebaseException catch (e) {
       debugPrint(e.code.toString());

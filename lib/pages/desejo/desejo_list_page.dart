@@ -1,17 +1,27 @@
+import 'package:acervo/helpers/responsive.dart';
+import 'package:acervo/models/desejo.dart';
+import 'package:acervo/pages/desejo/desejo_add_page.dart';
+import 'package:acervo/pages/desejo/desejo_edit_page.dart';
 import 'package:acervo/services/desejo_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:acervo/pages/desejo/desejo_add_page.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+//import 'package:intl/intl.dart';
 
-class DesejoListPage extends StatelessWidget {
+class DesejoListPage extends StatefulWidget {
   const DesejoListPage({super.key});
+
+  @override
+  State<DesejoListPage> createState() => _DesejoListPageState();
+}
+
+class _DesejoListPageState extends State<DesejoListPage> {
+  Desejo desejo = Desejo();
+  DesejoServices desejoServices = DesejoServices();
+
   @override
   Widget build(BuildContext context) {
-    DesejoServices desejoServices = DesejoServices();
-    final dateFormat = DateFormat('dd-MM-yyyy');
-
     return Scaffold(
+      backgroundColor: const Color.fromRGBO(214, 198, 255, 84),
       appBar: AppBar(
         title: const Text(
           'Lista de Desejos',
@@ -31,7 +41,7 @@ class DesejoListPage extends StatelessWidget {
           ),
           child: StreamBuilder(
             stream: desejoServices.getDesejos(),
-            builder: (context, snapshot) {
+            builder: ((context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
                   child: CircularProgressIndicator(),
@@ -40,33 +50,250 @@ class DesejoListPage extends StatelessWidget {
               if (snapshot.hasData) {
                 return ListView.builder(
                   itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (context, index) {
+                  itemBuilder: ((context, index) {
                     DocumentSnapshot ds = snapshot.data!.docs[index];
-                    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(
-                        ds['date'].millisecondsSinceEpoch);
                     return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 5.0, horizontal: 10),
+                      padding: EdgeInsets.only(
+                        left: Responsive.isExtraLarge(context)
+                            ? 300.0
+                            : Responsive.isDesktop(context)
+                                ? 200
+                                : Responsive.isLaptop(context)
+                                    ? 90
+                                    : Responsive.isTablet(context)
+                                        ? 50
+                                        : 20,
+                        right: Responsive.isExtraLarge(context)
+                            ? 300.0
+                            : Responsive.isDesktop(context)
+                                ? 200
+                                : Responsive.isLaptop(context)
+                                    ? 90
+                                    : Responsive.isTablet(context)
+                                        ? 50
+                                        : 20,
+                        bottom: 10,
+                      ),
                       child: Card(
-                        color: const Color.fromARGB(255, 238, 246, 237),
+                        //color: const Color.fromARGB(255, 238, 246, 237),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
-                              vertical: 5.0, horizontal: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            horizontal: 10.0,
+                            vertical: 10.0,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Categoria: ${ds['categoria']['nome']}'),
+                              SizedBox(
+                                height: 130,
+                                child: Row(
+                                  children: [
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              'Nome do Item: ${ds['nome']}',
+                                              style: TextStyle(
+                                                color: const Color.fromARGB(
+                                                    255, 7, 48, 8),
+                                                fontSize: Responsive
+                                                        .isExtraLarge(context)
+                                                    ? 21.0
+                                                    : Responsive.isDesktop(
+                                                            context)
+                                                        ? 19
+                                                        : Responsive.isLaptop(
+                                                                context)
+                                                            ? 17
+                                                            : Responsive
+                                                                    .isTablet(
+                                                                        context)
+                                                                ? 15
+                                                                : 12,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              'Nome do Autor: ${ds['autor']}',
+                                              style: TextStyle(
+                                                color: const Color.fromARGB(
+                                                    255, 7, 48, 8),
+                                                fontSize: Responsive
+                                                        .isExtraLarge(context)
+                                                    ? 21.0
+                                                    : Responsive.isDesktop(
+                                                            context)
+                                                        ? 19
+                                                        : Responsive.isLaptop(
+                                                                context)
+                                                            ? 17
+                                                            : Responsive
+                                                                    .isTablet(
+                                                                        context)
+                                                                ? 15
+                                                                : 12,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              'Categoria: ${ds['categoria'] != null ? ds['categoria']['nome'] ?? 'Sem nome' : 'Categoria não definida'}',
+                                              style: TextStyle(
+                                                color: const Color.fromARGB(
+                                                    255, 7, 48, 8),
+                                                fontSize: Responsive
+                                                        .isExtraLarge(context)
+                                                    ? 21.0
+                                                    : Responsive.isDesktop(
+                                                            context)
+                                                        ? 19
+                                                        : Responsive.isLaptop(
+                                                                context)
+                                                            ? 17
+                                                            : Responsive
+                                                                    .isTablet(
+                                                                        context)
+                                                                ? 15
+                                                                : 12,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              'Data de Cadastro: ${ds['data']}',
+                                              style: TextStyle(
+                                                color: const Color.fromARGB(
+                                                    255, 7, 48, 8),
+                                                fontSize: Responsive
+                                                        .isExtraLarge(context)
+                                                    ? 21.0
+                                                    : Responsive.isDesktop(
+                                                            context)
+                                                        ? 19
+                                                        : Responsive.isLaptop(
+                                                                context)
+                                                            ? 17
+                                                            : Responsive
+                                                                    .isTablet(
+                                                                        context)
+                                                                ? 15
+                                                                : 12,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              'Status: ${ds['status']}',
+                                              style: TextStyle(
+                                                color: const Color.fromARGB(
+                                                    255, 7, 48, 8),
+                                                fontSize: Responsive
+                                                        .isExtraLarge(context)
+                                                    ? 21.0
+                                                    : Responsive.isDesktop(
+                                                            context)
+                                                        ? 19
+                                                        : Responsive.isLaptop(
+                                                                context)
+                                                            ? 17
+                                                            : Responsive
+                                                                    .isTablet(
+                                                                        context)
+                                                                ? 15
+                                                                : 12,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Column(
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          desejoServices.deleteDesejo(ds.id);
+                                        },
+                                        child: const Icon(
+                                          Icons.delete,
+                                          color: Colors.red,
+                                          size: 30,
+                                        ),
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          desejo.id = ds.id;
+                                          desejo.nome = ds['nome'];
+                                          desejo.autor = ds['autor'];
+                                          //desejo.categoria = ds['categoria'];
+                                          desejo.data = ds['data'];
+                                          desejo.data = ds['status'];
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  DesejoEditPage(
+                                                desejo: desejo,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        child: const Icon(
+                                          Icons.edit,
+                                          color: Colors.orange,
+                                          size: 30,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                         ),
                       ),
                     );
-                  },
+                  }),
                 );
               } else {
                 return const CircularProgressIndicator();
               }
-            },
+            }),
           ),
         ),
       ),
@@ -79,7 +306,8 @@ class DesejoListPage extends StatelessWidget {
           },
           child: const Text(
             '+',
-            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
           )),
     );
   }

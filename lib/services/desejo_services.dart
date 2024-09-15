@@ -15,11 +15,32 @@ class DesejoServices {
       FirebaseFirestore.instance.collection('desejos');
   Desejo _desejos = Desejo();
   //método para persistir dados no firebase
+  // Future<bool> addDesejo({Desejo? desejo}) async {
+  //   try {
+  //     final doc = await _firestore.collection('desejos').add(desejo!.toMap());
+  //     _desejos = desejo;
+  //     _desejos.id = doc.id;
+  //     return Future.value(true);
+  //   } on FirebaseException catch (e) {
+  //     debugPrint(e.code.toString());
+  //     return Future.value(false);
+  //   }
+  // }
+
   Future<bool> addDesejo({Desejo? desejo}) async {
     try {
-      final doc = await _firestore.collection('desejos').add(desejo!.toMap());
+      // Cria um documento com um ID gerado automaticamente
+      final docRef = _firestore.collection('desejos').doc();
+
+      // Atribui o ID gerado ao objeto 'desejo'
+      desejo!.id = docRef.id;
+
+      // Grava o desejo no Firestore usando o ID gerado
+      await docRef.set(desejo.toMap());
+
+      // Atualiza o desejo na instância local, se necessário
       _desejos = desejo;
-      _desejos.id = doc.id;
+
       return Future.value(true);
     } on FirebaseException catch (e) {
       debugPrint(e.code.toString());
@@ -56,9 +77,49 @@ class DesejoServices {
         .snapshots();
   }
 
-  Future updateDesejo(Desejo desejo) async {
-    return _firestore.collection('desejos').doc(desejo.id).set(desejo.toMap());
+  // Future updateDesejo(Desejo desejo) async {
+  //   return _firestore.collection('desejos').doc(desejo.id).set(desejo.toMap());
+  // }
+
+  // Future updateDesejo(Desejo desejo) async {
+  //   try {
+  //     // Atualize o documento com o ID especificado
+  //     await _firestore.collection('desejos').doc(desejo.id).set(desejo.toMap());
+  //     return true;
+  //   } catch (e) {
+  //     print('Erro ao atualizar desejo: $e');
+  //     return false;
+  //   }
+  // }
+
+  // Método para atualizar um desejo
+  Future<bool> updateDesejo(Desejo desejo) async {
+    try {
+      if (desejo.id == null || desejo.id!.isEmpty) {
+        print('ID do desejo não definido');
+        return false;
+      }
+
+      await _firestore
+          .collection('desejos')
+          .doc(desejo.id)
+          .update(desejo.toMap());
+      return true;
+    } catch (e) {
+      print('Erro ao atualizar desejo: $e');
+      return false;
+    }
   }
+
+// Método para carregar um desejo para edição
+  // Future<Desejo?> getDesejoById(String id) async {
+  //   var doc = await _firestore.collection('desejos').doc(id).get();
+  //   if (doc.exists) {
+  //     var data = doc.data();
+  //     return Desejo.fromMap(data!);
+  //   }
+  //   return null;
+  // }
 
   Future deleteDesejo(String id) async {
     return _firestore.collection('desejos').doc(id).delete();

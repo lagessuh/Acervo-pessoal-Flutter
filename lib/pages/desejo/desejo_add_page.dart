@@ -1,13 +1,11 @@
 import 'package:acervo/models/categoria.dart';
 import 'package:acervo/models/desejo.dart';
 import 'package:acervo/services/categoria_services.dart';
-import 'package:acervo/commons/utils.dart';
 import 'package:acervo/services/desejo_services.dart';
 import 'package:acervo/services/user_services.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class DesejoAddPage extends StatefulWidget {
@@ -20,9 +18,11 @@ class DesejoAddPage extends StatefulWidget {
 class _DesejoAddPageState extends State<DesejoAddPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   CategoriaServices categoriaServices = CategoriaServices();
+  DesejoServices desejoServices = DesejoServices();
   Desejo desejo = Desejo();
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _autorController = TextEditingController();
+  final TextEditingController _dataController = TextEditingController();
 
 // Listas para os dropdowns
   List<String> statusDesejo = ['Não', 'Sim'];
@@ -128,45 +128,14 @@ class _DesejoAddPageState extends State<DesejoAddPage> {
                                 children: [
                                   Expanded(
                                     child: TextFormField(
-                                      initialValue: Utilities.getDateTime(),
-                                      decoration: InputDecoration(
-                                        label: const Text(
-                                          'Dia',
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                            color:
-                                                Color.fromARGB(255, 0, 12, 1),
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        border: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                            color:
-                                                Color.fromARGB(255, 0, 12, 1),
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
+                                      controller: _dataController,
+                                      decoration: const InputDecoration(
+                                          hintText: 'Data de Cadastro'),
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color.fromARGB(255, 1, 17, 1),
                                       ),
-                                      onSaved: (value) {
-                                        //-- definindo padrão de entrada para a data
-                                        var inputFormat =
-                                            DateFormat('dd-MM-yyyy');
-                                        //-- conversão do dado da variável "value" de String para data (DateTime)
-                                        var inputDate =
-                                            inputFormat.parse(value!);
-                                        //-- formato do padrão inglês (americano) para o padrão brasileiro (pt_BR)
-                                        DateFormat outputFormat =
-                                            DateFormat('yyyy-MM-dd', 'pt_BR');
-                                        //-- convertendo para o formato brasileiro
-                                        var outDate =
-                                            outputFormat.format(inputDate);
-                                        //-converte a data em formato String para o formato DateTime
-                                        DateTime now = DateTime.parse(outDate);
-                                        desejo.data = now;
-                                      },
                                     ),
                                   ),
                                   const SizedBox(
@@ -221,34 +190,57 @@ class _DesejoAddPageState extends State<DesejoAddPage> {
                                       onPressed: () async {
                                         if (_formKey.currentState!.validate()) {
                                           _formKey.currentState!.save();
+
+                                          // Atualize o item com os dados do formulário
+                                          desejo.nome = _nomeController.text;
+                                          desejo.autor = _autorController.text;
+                                          desejo.data = _dataController.text;
+
                                           DesejoServices desejoServices =
                                               DesejoServices();
                                           bool ok = await desejoServices
                                               .addDesejo(desejo: desejo);
+
                                           if (ok) {
                                             ScaffoldMessenger.of(context)
-                                                .showSnackBar(SnackBar(
-                                              content: const Text(
-                                                  'Dados foram gravados com sucesso'),
-                                              backgroundColor:
-                                                  Colors.amberAccent[400],
-                                              duration:
-                                                  const Duration(seconds: 5),
-                                            ));
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: const Text(
+                                                    'Dados do item foram gravados com sucesso'),
+                                                backgroundColor:
+                                                    Colors.amberAccent[400],
+                                                duration:
+                                                    const Duration(seconds: 5),
+                                              ),
+                                            );
                                             myToastDialog(
-                                                msg: 'Gravado com sucesso!!!');
+                                                msg:
+                                                    'Item gravado com sucesso!!!');
+
+                                            // Limpar campos e fechar a página após um breve atraso
+                                            Future.delayed(
+                                                    const Duration(seconds: 2))
+                                                .whenComplete(() {
+                                              _nomeController.clear();
+                                              _autorController.clear();
+                                              _dataController.clear();
+                                              Navigator.of(context).pop();
+                                            });
                                           } else {
                                             ScaffoldMessenger.of(context)
-                                                .showSnackBar(SnackBar(
-                                              content: const Text(
-                                                  'Problemas ao gravar dados'),
-                                              backgroundColor:
-                                                  Colors.amberAccent[400],
-                                              duration:
-                                                  const Duration(seconds: 5),
-                                            ));
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: const Text(
+                                                    'Problemas ao gravar dados do item'),
+                                                backgroundColor:
+                                                    Colors.amberAccent[400],
+                                                duration:
+                                                    const Duration(seconds: 5),
+                                              ),
+                                            );
                                             myToastDialog(
-                                                msg: 'Gravado com sucesso!!!');
+                                                msg:
+                                                    'Problemas ao gravar item!!!');
                                           }
                                         }
                                       },

@@ -10,7 +10,7 @@ class Desejo {
   String? nome;
   String? autor;
   Categoria? categoria = Categoria();
-  DateTime? data;
+  String? data;
   String? status;
   //Group({
   // required this.id,
@@ -29,7 +29,7 @@ class Desejo {
       String? nome,
       String? autor,
       Categoria? categoria,
-      DateTime? data,
+      String? data,
       String? status}) {
     return Desejo(
       id: id ?? this.id,
@@ -45,10 +45,10 @@ class Desejo {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
-      'name': nome,
-      'author': autor,
+      'nome': nome,
+      'autor': autor,
       'categoria': categoria?.toMapCategoriaDesejos(),
-      'date': data?.toIso8601String(),
+      'data': data,
       'status': status,
     };
   }
@@ -63,7 +63,7 @@ class Desejo {
       nome: map['nome'] != null ? map['nome'] as String : null,
       autor: map['autor'] != null ? map['autor'] as String : null,
       status: map['status'] != null ? map['status'] as String : null,
-      data: map['data'] != null ? map['data'] as DateTime : null,
+      data: map['data'] != null ? map['data'] as String : null,
     );
   }
 
@@ -87,7 +87,7 @@ class Desejo {
 
   @override
   String toString() =>
-      'WishList(id: $id, name: $nome, author: $autor, categories: $categoria, date: $data, status: $status)';
+      'Desejo(id: $id, nome: $nome, autor: $autor, categoria: $categoria, data: $data, status: $status)';
 
   @override
   bool operator ==(covariant Desejo other) {

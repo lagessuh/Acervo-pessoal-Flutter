@@ -1,6 +1,7 @@
 import 'package:acervo/helpers/responsive.dart';
 import 'package:acervo/models/genero.dart';
 import 'package:acervo/pages/genero/genero_add_page.dart';
+import 'package:acervo/pages/genero/genero_edit_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:acervo/services/genero_services.dart';
 import 'package:flutter/material.dart';
@@ -138,6 +139,15 @@ class _GeneroListPageState extends State<GeneroListPage> {
                                           onTap: () {
                                             genero.id = ds.id;
                                             genero.nome = ds['nome'];
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    GeneroEditPage(
+                                                  genero: genero,
+                                                ),
+                                              ),
+                                            );
                                           },
                                           child: const Icon(
                                             Icons.edit,

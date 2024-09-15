@@ -13,13 +13,34 @@ class CategoriaServices {
 
   Categoria _categorias = Categoria();
   //método para persistir dados no firebase
+  // Future<bool> addCategoria({Categoria? categoria}) async {
+  //   try {
+  //     final doc = await _firestore
+  //         .collection('categorias')
+  //         .add(categoria!.toMapCategoria());
+  //     _categorias = categoria;
+  //     _categorias.id = doc.id;
+  //     return Future.value(true);
+  //   } on FirebaseException catch (e) {
+  //     debugPrint(e.code.toString());
+  //     return Future.value(false);
+  //   }
+  // }
+
   Future<bool> addCategoria({Categoria? categoria}) async {
     try {
-      final doc = await _firestore
-          .collection('categorias')
-          .add(categoria!.toMapCategoria());
+      // Cria um documento com um ID gerado automaticamente
+      final docRef = _firestore.collection('categorias').doc();
+
+      // Atribui o ID gerado ao objeto 'categoria'
+      categoria!.id = docRef.id;
+
+      // Grava a categoria no Firestore usando o ID gerado
+      await docRef.set(categoria.toMapCategoria());
+
+      // Atualiza a instância local, se necessário
       _categorias = categoria;
-      _categorias.id = doc.id;
+
       return Future.value(true);
     } on FirebaseException catch (e) {
       debugPrint(e.code.toString());
@@ -87,14 +108,54 @@ class CategoriaServices {
     }).toList();
   }
 
+  // Future<List<Categoria>> getAllCategoriaDesejo(String filter) async {
+  //   QuerySnapshot querySnapshot = await _collectionRef.orderBy('nome').get();
+  //   return querySnapshot.docs.map((doc) {
+  //     return Categoria(
+  //       id: doc.id,
+  //       nome: doc['nome'],
+  //     );
+  //   }).toList();
+  // }
+
+  // Future<List<Categoria>> getAllCategoriaDesejo(String filter) async {
+  //   QuerySnapshot querySnapshot = await _collectionRef.orderBy('nome').get();
+  //   return querySnapshot.docs.map((doc) {
+  //     return Categoria.fromMap(doc.data() as Map<String, dynamic>);
+  //   }).toList();
+  // }
+
+  // Future<List<Categoria>> getAllCategoriaDesejo(String filter) async {
+  //   QuerySnapshot querySnapshot = await _collectionRef
+  //       .where('nome', isGreaterThanOrEqualTo: filter)
+  //       .where('nome', isLessThanOrEqualTo: filter + '\uf8ff')
+  //       .orderBy('nome')
+  //       .get();
+
+  //   return querySnapshot.docs.map((doc) {
+  //     final data = doc.data() as Map<String, dynamic>;
+  //     return Categoria(
+  //       id: doc.id,
+  //       nome: data['nome'] as String?,
+  //     );
+  //   }).toList();
+  // }
+
   Future<List<Categoria>> getAllCategoriaDesejo(String filter) async {
     QuerySnapshot querySnapshot = await _collectionRef.orderBy('nome').get();
-    return querySnapshot.docs.map((doc) {
+
+    // Converte os documentos para Map e depois para Categoria
+    List<Categoria> categorias = querySnapshot.docs.map((doc) {
+      // Usa o cast para garantir que estamos lidando com Map<String, dynamic>
+      final data = doc.data() as Map<String, dynamic>;
+
       return Categoria(
         id: doc.id,
-        nome: doc['nome'],
+        nome: data['nome'] as String?, // Verifica se o tipo é correto
       );
     }).toList();
+
+    return categorias;
   }
 
   Future<List<Map<String, dynamic>>> getCategoriaToUser() async {

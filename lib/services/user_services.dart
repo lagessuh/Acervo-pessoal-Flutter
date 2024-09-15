@@ -309,4 +309,102 @@ class UserServices extends ChangeNotifier {
       return categorias;
     }
   }
+
+  // Adiciona o ID de um item à lista de IDs do usuário
+  Future<void> addItemToUser(String userId, String itemId) async {
+    try {
+      await _firestore.collection('users').doc(userId).update({
+        'itens': FieldValue.arrayUnion([itemId]),
+      });
+    } catch (e) {
+      // Trate o erro aqui
+      print('Erro ao adicionar item ao usuário: $e');
+    }
+  }
+
+  // Adiciona o ID de uma categoria à lista de IDs do usuário
+  Future<void> addCategoriaToUser(String userId, String categoriaId) async {
+    try {
+      await _firestore.collection('users').doc(userId).update({
+        'categorias': FieldValue.arrayUnion([categoriaId]),
+      });
+    } catch (e) {
+      // Trate o erro aqui
+      print('Erro ao adicionar categoria ao usuário: $e');
+    }
+  }
+
+  // Adiciona o ID de um desejo à lista de IDs do usuário
+  Future<void> addDesejoToUser(String userId, String desejoId) async {
+    try {
+      await _firestore.collection('users').doc(userId).update({
+        'desejos': FieldValue.arrayUnion([desejoId]),
+      });
+    } catch (e) {
+      // Trate o erro aqui
+      print('Erro ao adicionar desejo ao usuário: $e');
+    }
+  }
+
+  // Adiciona o ID de uma aquisição à lista de IDs do usuário
+  Future<void> addAquisicaoToUser(String userId, String aquisicaoId) async {
+    try {
+      await _firestore.collection('users').doc(userId).update({
+        'aquisicoes': FieldValue.arrayUnion([aquisicaoId]),
+      });
+    } catch (e) {
+      // Trate o erro aqui
+      print('Erro ao adicionar aquisição ao usuário: $e');
+    }
+  }
+
+  // Remove o ID de um item da lista de IDs do usuário
+  Future<void> removeItemFromUser(String userId, String itemId) async {
+    try {
+      await _firestore.collection('users').doc(userId).update({
+        'itens': FieldValue.arrayRemove([itemId]),
+      });
+    } catch (e) {
+      // Trate o erro aqui
+      print('Erro ao remover item do usuário: $e');
+    }
+  }
+
+  // Remove o ID de uma categoria da lista de IDs do usuário
+  Future<void> removeCategoriaFromUser(
+      String userId, String categoriaId) async {
+    try {
+      await _firestore.collection('users').doc(userId).update({
+        'categorias': FieldValue.arrayRemove([categoriaId]),
+      });
+    } catch (e) {
+      // Trate o erro aqui
+      print('Erro ao remover categoria do usuário: $e');
+    }
+  }
+
+  // Remove o ID de um desejo da lista de IDs do usuário
+  Future<void> removeDesejoFromUser(String userId, String desejoId) async {
+    try {
+      await _firestore.collection('users').doc(userId).update({
+        'desejos': FieldValue.arrayRemove([desejoId]),
+      });
+    } catch (e) {
+      // Trate o erro aqui
+      print('Erro ao remover desejo do usuário: $e');
+    }
+  }
+
+  // Remove o ID de uma aquisição da lista de IDs do usuário
+  Future<void> removeAquisicaoFromUser(
+      String userId, String aquisicaoId) async {
+    try {
+      await _firestore.collection('users').doc(userId).update({
+        'aquisicoes': FieldValue.arrayRemove([aquisicaoId]),
+      });
+    } catch (e) {
+      // Trate o erro aqui
+      print('Erro ao remover aquisição do usuário: $e');
+    }
+  }
 }

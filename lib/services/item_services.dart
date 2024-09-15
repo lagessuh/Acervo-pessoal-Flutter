@@ -16,12 +16,34 @@ class ItemServices {
   final CollectionReference _collectionRef =
       FirebaseFirestore.instance.collection('itens');
   Item _itens = Item();
+
   //método para persistir dados no firebase
+  // Future<bool> addItem({Item? item}) async {
+  //   try {
+  //     final doc = await _firestore.collection('itens').add(item!.toMap());
+  //     _itens = item;
+  //     _itens.id = doc.id;
+  //     return Future.value(true);
+  //   } on FirebaseException catch (e) {
+  //     debugPrint(e.code.toString());
+  //     return Future.value(false);
+  //   }
+  // }
+
   Future<bool> addItem({Item? item}) async {
     try {
-      final doc = await _firestore.collection('itens').add(item!.toMap());
+      // Cria um documento com um ID gerado automaticamente
+      final docRef = _firestore.collection('itens').doc();
+
+      // Atribui o ID gerado ao objeto 'item'
+      item!.id = docRef.id;
+
+      // Grava o item no Firestore usando o ID gerado
+      await docRef.set(item.toMap());
+
+      // Atualiza o item na instância local, se necessário
       _itens = item;
-      _itens.id = doc.id;
+
       return Future.value(true);
     } on FirebaseException catch (e) {
       debugPrint(e.code.toString());

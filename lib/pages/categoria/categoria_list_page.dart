@@ -1,6 +1,7 @@
 import 'package:acervo/helpers/responsive.dart';
 import 'package:acervo/models/categoria.dart';
 import 'package:acervo/pages/categoria/categoria_add_page.dart';
+import 'package:acervo/pages/categoria/categoria_edit_page.dart';
 import 'package:acervo/services/categoria_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -138,6 +139,15 @@ class _CategoriaListPageState extends State<CategoriaListPage> {
                                           onTap: () {
                                             categoria.id = ds.id;
                                             categoria.nome = ds['nome'];
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    CategoriaEditPage(
+                                                  categoria: categoria,
+                                                ),
+                                              ),
+                                            );
                                           },
                                           child: const Icon(
                                             Icons.edit,

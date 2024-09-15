@@ -157,8 +157,8 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: appTheme.copyWith(
-          colorScheme:
-              ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 7, 39, 1)),
+          colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color.fromARGB(255, 7, 39, 1)),
         ),
         home: const MyAccess(),
       ),

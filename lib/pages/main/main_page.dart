@@ -1,8 +1,8 @@
 import 'package:acervo/commons/appbar_ui.dart';
 import 'package:acervo/helpers/responsive.dart';
 import 'package:acervo/pages/acervo/admin_page.dart';
-import 'package:acervo/pages/home/home_page.dart';
 import 'package:acervo/pages/desejo/desejo_list_page.dart';
+import 'package:acervo/pages/home/home_page.dart';
 import 'package:acervo/pages/profile/profile_page.dart';
 import 'package:flutter/material.dart';
 

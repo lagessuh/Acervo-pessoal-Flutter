@@ -1,6 +1,7 @@
 import 'package:acervo/helpers/responsive.dart';
 import 'package:acervo/models/aquisicao.dart';
 import 'package:acervo/pages/aquisicao/aquisicao_add_page.dart';
+import 'package:acervo/pages/aquisicao/aquisicao_edit_page.dart';
 import 'package:acervo/services/aquisicao_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -138,6 +139,15 @@ class _AquisicaoListPageState extends State<AquisicaoListPage> {
                                           onTap: () {
                                             aquisicao.id = ds.id;
                                             aquisicao.nome = ds['nome'];
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    AquisicaoEditPage(
+                                                  aquisicao: aquisicao,
+                                                ),
+                                              ),
+                                            );
                                           },
                                           child: const Icon(
                                             Icons.edit,

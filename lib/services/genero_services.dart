@@ -23,12 +23,30 @@ class GeneroServices {
   //   }
   // }
 
+  // Future<bool> addGenero({Genero? genero}) async {
+  //   try {
+  //     // Cria um documento com um ID gerado automaticamente
+  //     final docRef = _firestore.collection('generos').doc();
+  //     await docRef.set(genero!.toMapGeneroItem());
+  //     genero.id = docRef.id;
+  //     return Future.value(true);
+  //   } on FirebaseException catch (e) {
+  //     debugPrint(e.code.toString());
+  //     return Future.value(false);
+  //   }
+  // }
+
   Future<bool> addGenero({Genero? genero}) async {
     try {
       // Cria um documento com um ID gerado automaticamente
       final docRef = _firestore.collection('generos').doc();
-      await docRef.set(genero!.toMapGeneroItem());
-      genero.id = docRef.id;
+
+      // Define o ID gerado no objeto 'genero'
+      genero!.id = docRef.id;
+
+      // Grava o objeto no Firestore com o ID gerado
+      await docRef.set(genero.toMapGeneroItem());
+
       return Future.value(true);
     } on FirebaseException catch (e) {
       debugPrint(e.code.toString());

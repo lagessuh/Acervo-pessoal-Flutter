@@ -1,6 +1,7 @@
 import 'package:acervo/helpers/responsive.dart';
 import 'package:acervo/models/item.dart';
 import 'package:acervo/pages/item/item_add_page.dart';
+import 'package:acervo/pages/item/item_edit_page.dart';
 import 'package:acervo/services/item_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -357,7 +358,7 @@ class _ItemListPageState extends State<ItemListPage> {
                                         Row(
                                           children: [
                                             Text(
-                                              'Data de Lançamento: ${ds['data']}',
+                                              'Data de Cadastro: ${ds['data']}',
                                               style: TextStyle(
                                                 color: const Color.fromARGB(
                                                     255, 7, 48, 8),
@@ -413,6 +414,15 @@ class _ItemListPageState extends State<ItemListPage> {
                                           item.dataLancamento =
                                               ds['dataLancamento'];
                                           item.data = ds['data'];
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ItemEditPage(
+                                                item: item,
+                                              ),
+                                            ),
+                                          );
                                         },
                                         child: const Icon(
                                           Icons.edit,
