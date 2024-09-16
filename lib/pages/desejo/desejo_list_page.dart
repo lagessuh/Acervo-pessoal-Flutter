@@ -1,4 +1,5 @@
 import 'package:acervo/helpers/responsive.dart';
+import 'package:acervo/models/categoria.dart';
 import 'package:acervo/models/desejo.dart';
 import 'package:acervo/pages/desejo/desejo_add_page.dart';
 import 'package:acervo/pages/desejo/desejo_edit_page.dart';
@@ -255,14 +256,19 @@ class _DesejoListPageState extends State<DesejoListPage> {
                                           size: 30,
                                         ),
                                       ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
                                       InkWell(
                                         onTap: () {
                                           desejo.id = ds.id;
                                           desejo.nome = ds['nome'];
                                           desejo.autor = ds['autor'];
-                                          //desejo.categoria = ds['categoria'];
+                                          // desejo.categoria = ds['categoria'];
+                                          desejo.categoria = Categoria.fromMap(
+                                              ds['categoria']);
                                           desejo.data = ds['data'];
-                                          desejo.data = ds['status'];
+                                          desejo.status = ds['status'];
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(

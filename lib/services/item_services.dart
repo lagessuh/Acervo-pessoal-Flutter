@@ -30,13 +30,50 @@ class ItemServices {
   //   }
   // }
 
+  // Future<bool> addItem({Item? item}) async {
+  //   try {
+  //     // Cria um documento com um ID gerado automaticamente
+  //     final docRef = _firestore.collection('itens').doc();
+
+  //     // Atribui o ID gerado ao objeto 'item'
+  //     item!.id = docRef.id;
+
+  //     // Grava o item no Firestore usando o ID gerado
+  //     await docRef.set(item.toMap());
+
+  //     // Atualiza o item na instância local, se necessário
+  //     _itens = item;
+
+  //     return Future.value(true);
+  //   } on FirebaseException catch (e) {
+  //     debugPrint(e.code.toString());
+  //     return Future.value(false);
+  //   }
+  // }
+
   Future<bool> addItem({Item? item}) async {
     try {
+      // Obter o usuário logado
+      User? currentUser = FirebaseAuth.instance.currentUser;
+
+      if (currentUser == null) {
+        // Caso o usuário não esteja logado, retorna false
+        print('Usuário não logado');
+        return Future.value(false);
+      }
+
+      // Preencher o userlocal com os dados do usuário logado
+      item!.userlocal = UserLocal(
+        id: currentUser.uid,
+        userName: currentUser.displayName ??
+            'Usuário desconhecido', // ou outro dado relevante
+      );
+
       // Cria um documento com um ID gerado automaticamente
       final docRef = _firestore.collection('itens').doc();
 
       // Atribui o ID gerado ao objeto 'item'
-      item!.id = docRef.id;
+      item.id = docRef.id;
 
       // Grava o item no Firestore usando o ID gerado
       await docRef.set(item.toMap());

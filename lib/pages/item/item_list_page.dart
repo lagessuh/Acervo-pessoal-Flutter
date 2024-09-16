@@ -1,4 +1,7 @@
 import 'package:acervo/helpers/responsive.dart';
+import 'package:acervo/models/aquisicao.dart';
+import 'package:acervo/models/categoria.dart';
+import 'package:acervo/models/genero.dart';
 import 'package:acervo/models/item.dart';
 import 'package:acervo/pages/item/item_add_page.dart';
 import 'package:acervo/pages/item/item_edit_page.dart';
@@ -242,7 +245,8 @@ class _ItemListPageState extends State<ItemListPage> {
                                         Row(
                                           children: [
                                             Text(
-                                              'Local de Aquisição: ${ds['aquisicao']['nome']}',
+                                              //'Local de Aquisição: ${ds['aquisicao']['nome']}',
+                                              'Local de Aquisição: ${ds['aquisicao'] != null ? ds['aquisicao']['nome'] ?? 'Sem nome' : 'Local não definido'}',
                                               style: TextStyle(
                                                 color: const Color.fromARGB(
                                                     255, 7, 48, 8),
@@ -271,7 +275,7 @@ class _ItemListPageState extends State<ItemListPage> {
                                         Row(
                                           children: [
                                             Text(
-                                              'Categoria: ${ds['categoria']['nome']}',
+                                              'Categoria: ${ds['categoria'] != null ? ds['categoria']['nome'] ?? 'Sem nome' : 'Categoria não definida'}',
                                               style: TextStyle(
                                                 color: const Color.fromARGB(
                                                     255, 7, 48, 8),
@@ -300,7 +304,8 @@ class _ItemListPageState extends State<ItemListPage> {
                                         Row(
                                           children: [
                                             Text(
-                                              'Gênero: ${ds['genero']['nome']}',
+                                              //'Gênero: ${ds['genero']['nome']}',
+                                              'Gênero: ${ds['genero'] != null ? ds['genero']['nome'] ?? 'Sem nome' : 'Gênero não definido'}',
                                               style: TextStyle(
                                                 color: const Color.fromARGB(
                                                     255, 7, 48, 8),
@@ -400,6 +405,9 @@ class _ItemListPageState extends State<ItemListPage> {
                                           size: 30,
                                         ),
                                       ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
                                       InkWell(
                                         onTap: () {
                                           item.id = ds.id;
@@ -408,9 +416,16 @@ class _ItemListPageState extends State<ItemListPage> {
                                           item.edicao = ds['edicao'];
                                           item.tipo = ds['tipo'];
                                           item.avaliacao = ds['avaliacao'];
-                                          item.genero = ds['genero'];
-                                          item.aquisicao = ds['aquisicao'];
-                                          item.categoria = ds['categoria'];
+                                          // item.aquisicao = ds['aquisicao'];
+                                          item.aquisicao = Aquisicao.fromMap(
+                                              ds['aquisicao']);
+                                          // item.avaliacao = ds['avaliacao'];
+                                          item.categoria = Categoria.fromMap(
+                                              ds['categoria']);
+                                          // item.genero = ds['genero'];
+                                          item.genero =
+                                              Genero.fromMap(ds['genero']);
+                                          // item.categoria = ds['categoria'];
                                           item.dataLancamento =
                                               ds['dataLancamento'];
                                           item.data = ds['data'];

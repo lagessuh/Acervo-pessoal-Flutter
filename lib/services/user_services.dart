@@ -83,27 +83,84 @@ class UserServices extends ChangeNotifier {
   //   }
   // }
 
-  Future<bool> signUp(
-      {UserLocal? userLocal,
-      String? userName,
-      String? email,
-      String? password,
-      Function? onFail,
-      Function? onSuccess}) async {
+  // Future<bool> signUp(
+  //     {UserLocal? userLocal,
+  //     String? userName,
+  //     String? email,
+  //     String? password,
+  //     Function? onFail,
+  //     Function? onSuccess}) async {
+  //   try {
+  //     User? user = (await _auth.createUserWithEmailAndPassword(
+  //       email: userLocal!.email!,
+  //       password: password!,
+  //     ))
+  //         .user;
+  //     this.userLocal = userLocal;
+  //     this.userLocal!.id = user!.uid;
+  //     saveData();
+
+  //     _loadingCurrentUser(user: user);
+  //     onSuccess!();
+  //     return Future.value(true);
+  //   } on FirebaseAuthException catch (e) {
+  //     if (e.code == 'user-not-found') {
+  //       onFail!('Não há usuário registrado com este email');
+  //     } else if (e.code == 'wrong-password') {
+  //       onFail!('A senha informada não confere');
+  //     } else if (e.code == 'invalid-email') {
+  //       onFail!('O email informado está com formato inválido');
+  //     } else if (e.code == 'user-disabled') {
+  //       onFail!('Email do usuário está desabilitado');
+  //     }
+  //     return Future.value(false);
+  //   }
+  // }
+
+  Future<bool> signUp({
+    UserLocal? userLocal,
+    String? userName,
+    String? email,
+    String? password,
+    Function? onFail,
+    Function? onSuccess,
+  }) async {
     try {
+      // Cria o usuário no Firebase Authentication
       User? user = (await _auth.createUserWithEmailAndPassword(
-        email: userLocal!.email!,
-        password: password!,
+        email: userLocal!.email!, // usa o email do userLocal
+        password: password!, // usa a senha fornecida
       ))
           .user;
-      this.userLocal = userLocal;
-      this.userLocal!.id = user!.uid;
-      saveData();
 
-      _loadingCurrentUser(user: user);
-      onSuccess!();
-      return Future.value(true);
+      // // Atribui o UID gerado pelo Firebase Auth ao userLocal.id
+      // this.userLocal = userLocal;
+      // this.userLocal!.id =
+      //     user!.uid; // aqui o id do Firebase Auth é salvo em userLocal
+      // Define o ID gerado no objeto 'genero'
+      final docRef = _firestore.collection('users').doc();
+      userLocal!.id = docRef.id;
+
+      // Grava o objeto no Firestore com o ID gerado
+      await docRef.set(userLocal.toMap());
+      // Chama o método saveData e aguarda a conclusão
+      bool success = await saveData(); // Aguarda o salvamento no Firestore
+
+      if (success) {
+        // Carrega o usuário atual
+        _loadingCurrentUser(user: user);
+
+        // Chama a função de sucesso
+        onSuccess!();
+
+        return true; // Retorna true se tudo der certo
+      } else {
+        // Se houver erro ao salvar, retorna false
+        onFail!("Erro ao salvar dados do usuário");
+        return false;
+      }
     } on FirebaseAuthException catch (e) {
+      // Trata os possíveis erros do FirebaseAuthException
       if (e.code == 'user-not-found') {
         onFail!('Não há usuário registrado com este email');
       } else if (e.code == 'wrong-password') {
@@ -113,9 +170,59 @@ class UserServices extends ChangeNotifier {
       } else if (e.code == 'user-disabled') {
         onFail!('Email do usuário está desabilitado');
       }
-      return Future.value(false);
+      return false;
     }
   }
+
+  // Future<bool> signUp({
+  //   UserLocal? userLocal,
+  //   String? userName,
+  //   String? email,
+  //   String? password,
+  //   Function? onFail,
+  //   Function? onSuccess,
+  // }) async {
+  //   try {
+  //     // Cria o usuário no Firebase Authentication
+  //     User? user = (await _auth.createUserWithEmailAndPassword(
+  //       email: userLocal!.email!, // usa o email do userLocal
+  //       password: password!, // usa a senha fornecida
+  //     ))
+  //         .user;
+
+  //     // Salva o UID gerado pelo Firebase Auth no campo 'id' do userLocal
+  //     this.userLocal = userLocal;
+  //     this.userLocal!.id = user!.uid;
+
+  //     // Define o ID gerado para o documento no Firestore (diferente do UID do Firebase)
+  //     final docRef = _firestore
+  //         .collection('users')
+  //         .doc(); // Gera um novo ID para o documento no Firestore
+
+  //     // Armazena o UID do Firebase no campo 'id' do documento no Firestore
+  //     userLocal!.id = user.uid;
+
+  //     // Grava o objeto no Firestore com o ID gerado (diferente do UID)
+  //     await docRef.set(userLocal.toMap());
+
+  //     // Chama a função de sucesso
+  //     onSuccess!();
+
+  //     return true; // Retorna true se tudo der certo
+  //   } on FirebaseAuthException catch (e) {
+  //     // Trata os possíveis erros do FirebaseAuthException
+  //     if (e.code == 'user-not-found') {
+  //       onFail!('Não há usuário registrado com este email');
+  //     } else if (e.code == 'wrong-password') {
+  //       onFail!('A senha informada não confere');
+  //     } else if (e.code == 'invalid-email') {
+  //       onFail!('O email informado está com formato inválido');
+  //     } else if (e.code == 'user-disabled') {
+  //       onFail!('Email do usuário está desabilitado');
+  //     }
+  //     return false;
+  //   }
+  // }
 
   signIn(
       {String? email,
@@ -164,13 +271,27 @@ class UserServices extends ChangeNotifier {
   //     print('Erro ao salvar dados do usuário: $e');
   //   }
   // }
+  // Future<bool> saveData() async {
+  //   try {
+  //     await _docRef.set(userLocal!.toJson2());
+  //     return true;
+  //   } catch (e) {
+  //     debugPrint('Erro ao salvar dados: $e');
+  //     return false;
+  //   }
+  // }
   Future<bool> saveData() async {
     try {
-      await _docRef.set(userLocal!.toJson2());
-      return true;
+      final _docRef = FirebaseFirestore.instance.collection('users').doc(
+          userLocal!
+              .id); // Usando o id do userLocal para referenciar o documento
+
+      await _docRef.set(userLocal!.toJson2()); // Salva os dados
+
+      return true; // Retorna true se os dados forem salvos com sucesso
     } catch (e) {
       debugPrint('Erro ao salvar dados: $e');
-      return false;
+      return false; // Retorna false se houver erro
     }
   }
 
@@ -178,8 +299,8 @@ class UserServices extends ChangeNotifier {
   updateData(
       {UserLocal? userLocal, Function? onFail, Function? onSuccess}) async {
     this.userLocal!.id = userLocal!.id;
-    debugPrint(
-        'atualizando dados do usuário ${userLocal.categorias.toString()}');
+    debugPrint('atualizando dados do usuário ${userLocal.toString()}');
+    //${userLocal.categorias.toString()}
     try {
       // await _docRef.set(userLocal.toJson());
       await _firestore
@@ -197,29 +318,29 @@ class UserServices extends ChangeNotifier {
     }
   }
 
-  //Método para persistir dados do usuário no firebase firestore
-  updateCategoriasData(
-      {UserLocal? userLocal, Function? onFail, Function? onSuccess}) async {
-    this.userLocal!.id = userLocal!.id;
-    try {
-      // await _docRef.update(userLocal.toJson());
-      _firestore
-          .collection('users')
-          .doc(userLocal.id)
-          .collection('categorias')
-          .add({
-        'categorias': FieldValue.arrayUnion(userLocal.categorias!),
-      });
-      final DocumentSnapshot docUser =
-          await _firestore.collection('users').doc(this.userLocal!.id).get();
+//   //Método para persistir dados do usuário no firebase firestore
+//   updateCategoriasData(
+//       {UserLocal? userLocal, Function? onFail, Function? onSuccess}) async {
+//     this.userLocal!.id = userLocal!.id;
+//     try {
+//       // await _docRef.update(userLocal.toJson());
+//       _firestore
+//           .collection('users')
+//           .doc(userLocal.id)
+//           .collection('categorias')
+//           .add({
+//         'categorias': FieldValue.arrayUnion(userLocal.categorias!),
+//       });
+//       final DocumentSnapshot docUser =
+//           await _firestore.collection('users').doc(this.userLocal!.id).get();
 
-      userLocal = UserLocal.fromDocument(docUser);
-      notifyListeners();
-      onSuccess!();
-    } on MyFirebaseExceptions catch (e) {
-      onFail!(MyFirebaseExceptions(e.code));
-    }
-  }
+//       userLocal = UserLocal.fromDocument(docUser);
+//       notifyListeners();
+//       onSuccess!();
+//     } on MyFirebaseExceptions catch (e) {
+//       onFail!(MyFirebaseExceptions(e.code));
+//     }
+//   }
 
   //--obter usuário conectado
   // Future<void> _loadingCurrentUser({User? user}) async {
