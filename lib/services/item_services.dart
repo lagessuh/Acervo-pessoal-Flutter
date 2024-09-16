@@ -245,14 +245,40 @@ class ItemServices {
   // }
 
   // Método para buscar itens filtrados por categoria e texto
+  // Future<List<Item>> getItensFiltrados(
+  //     List<Categoria> categorias, String searchText) async {
+  //   try {
+  //     Query query = _firestore.collection('itens');
+
+  //     if (categorias.isNotEmpty) {
+  //       List<String> categoriaIds = categorias.map((e) => e.id!).toList();
+  //       query = query.where('categoria.id', whereIn: categoriaIds);
+  //     }
+
+  //     if (searchText.isNotEmpty) {
+  //       query = query
+  //           .where('nome', isGreaterThanOrEqualTo: searchText)
+  //           .where('nome', isLessThanOrEqualTo: searchText + '\uf8ff');
+  //     }
+
+  //     QuerySnapshot snapshot = await query.get();
+
+  //     return snapshot.docs
+  //         .map((doc) => Item.fromMap(doc.data() as Map<String, dynamic>))
+  //         .toList();
+  //   } catch (e) {
+  //     throw Exception('Erro ao filtrar itens: $e');
+  //   }
+  // }
+// Método para buscar itens filtrados por categoria e texto
   Future<List<Item>> getItensFiltrados(
       List<Categoria> categorias, String searchText) async {
     try {
       Query query = _firestore.collection('itens');
 
       if (categorias.isNotEmpty) {
-        List<String> categoriaIds = categorias.map((e) => e.id!).toList();
-        query = query.where('categoria.id', whereIn: categoriaIds);
+        List<String> categoriaNomes = categorias.map((e) => e.nome!).toList();
+        query = query.where('categoria.nome', whereIn: categoriaNomes);
       }
 
       if (searchText.isNotEmpty) {
@@ -270,6 +296,42 @@ class ItemServices {
       throw Exception('Erro ao filtrar itens: $e');
     }
   }
+
+  // Future<List<Item>> getItensFiltrados(
+  //     List<Categoria> categorias, String searchText) async {
+  //   try {
+  //     Query query = _firestore.collection('itens');
+
+  //     // Verifique se categorias não está vazio e se IDs não são nulos
+  //     if (categorias.isNotEmpty) {
+  //       List<String> categoriaIds = categorias
+  //           .where((e) => e.id != null) // Filtra categorias com IDs não nulos
+  //           .map((e) => e.id!)
+  //           .toList();
+  //       if (categoriaIds.isNotEmpty) {
+  //         query = query.where('categoria.id', whereIn: categoriaIds);
+  //       }
+  //     }
+
+  //     // Verifique se o texto de busca não está vazio
+  //     if (searchText.isNotEmpty) {
+  //       query = query
+  //           .where('nome', isGreaterThanOrEqualTo: searchText)
+  //           .where('nome', isLessThanOrEqualTo: searchText + '\uf8ff');
+  //     }
+
+  //     QuerySnapshot snapshot = await query.get();
+
+  //     // Transforme os documentos em uma lista de itens
+  //     return snapshot.docs
+  //         .map((doc) => Item.fromMap(doc.data() as Map<String, dynamic>))
+  //         .toList();
+  //   } catch (e) {
+  //     // Adicione logs para depuração
+  //     print('Erro ao filtrar itens: $e');
+  //     throw Exception('Erro ao filtrar itens: $e');
+  //   }
+  // }
 
   // Stream<List<Item>> getItens({List<String>? categorias, String? searchText}) {
   //   Query query =
