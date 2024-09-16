@@ -2,11 +2,13 @@
 //DTO => Data Transfer Object
 import 'dart:convert';
 
+import 'package:acervo/models/userlocal.dart';
 import 'package:flutter/foundation.dart';
 
 class Categoria {
   String? id;
   String? nome;
+  UserLocal? userlocal = UserLocal();
 
   //id, categoria
 
@@ -14,15 +16,18 @@ class Categoria {
   Categoria({
     this.id,
     this.nome,
+    this.userlocal,
   });
 
   Categoria copyWith({
     String? id,
     String? nome,
+    UserLocal? userlocal,
   }) {
     return Categoria(
       id: id ?? this.id,
       nome: nome ?? this.nome,
+      userlocal: userlocal ?? this.userlocal,
     );
   }
 
@@ -37,6 +42,7 @@ class Categoria {
     return {
       'id': id,
       'nome': nome,
+      'userlocal': userlocal?.toJsonUser(),
     };
   }
 
@@ -44,6 +50,7 @@ class Categoria {
     return {
       'id': id,
       'nome': nome,
+      'userlocal': userlocal?.toJsonUser(),
     };
   }
 
@@ -55,6 +62,9 @@ class Categoria {
     return Categoria(
       id: map['id'] != null ? map['id'] as String : null,
       nome: map['nome'] != null ? map['nome'] as String : null,
+      userlocal: map['userlocal'] != null
+          ? UserLocal.fromMap(map['userlocal'] as Map<String, dynamic>)
+          : null,
     );
   }
 

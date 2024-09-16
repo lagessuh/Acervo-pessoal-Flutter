@@ -1,5 +1,7 @@
+import 'package:acervo/models/userlocal.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:acervo/models/genero.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
 class GeneroServices {
@@ -38,6 +40,19 @@ class GeneroServices {
 
   Future<bool> addGenero({Genero? genero}) async {
     try {
+      User? currentUser = FirebaseAuth.instance.currentUser;
+
+      if (currentUser == null) {
+        // Caso o usuário não esteja logado, retorna false
+        print('Usuário não logado');
+        return Future.value(false);
+      }
+
+      // Preencher o userlocal com os dados do usuário logado
+      genero!.userlocal = UserLocal(
+        id: currentUser.uid, // ou outro dado relevante
+      );
+
       // Cria um documento com um ID gerado automaticamente
       final docRef = _firestore.collection('generos').doc();
 

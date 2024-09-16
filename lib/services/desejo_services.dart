@@ -1,4 +1,5 @@
 import 'package:acervo/models/desejo.dart';
+import 'package:acervo/models/userlocal.dart';
 import 'package:acervo/utils/exceptions/my_firebase_auth_exceptions.dart';
 import 'package:acervo/utils/exceptions/my_firebase_exceptions.dart';
 import 'package:acervo/utils/exceptions/my_platform_exception.dart';
@@ -29,6 +30,18 @@ class DesejoServices {
 
   Future<bool> addDesejo({Desejo? desejo}) async {
     try {
+      User? currentUser = FirebaseAuth.instance.currentUser;
+
+      if (currentUser == null) {
+        // Caso o usuário não esteja logado, retorna false
+        print('Usuário não logado');
+        return Future.value(false);
+      }
+
+      // Preencher o userlocal com os dados do usuário logado
+      desejo!.userlocal = UserLocal(
+        id: currentUser.uid, // ou outro dado relevante
+      );
       // Cria um documento com um ID gerado automaticamente
       final docRef = _firestore.collection('desejos').doc();
 

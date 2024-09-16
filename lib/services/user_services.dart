@@ -83,84 +83,27 @@ class UserServices extends ChangeNotifier {
   //   }
   // }
 
-  // Future<bool> signUp(
-  //     {UserLocal? userLocal,
-  //     String? userName,
-  //     String? email,
-  //     String? password,
-  //     Function? onFail,
-  //     Function? onSuccess}) async {
-  //   try {
-  //     User? user = (await _auth.createUserWithEmailAndPassword(
-  //       email: userLocal!.email!,
-  //       password: password!,
-  //     ))
-  //         .user;
-  //     this.userLocal = userLocal;
-  //     this.userLocal!.id = user!.uid;
-  //     saveData();
-
-  //     _loadingCurrentUser(user: user);
-  //     onSuccess!();
-  //     return Future.value(true);
-  //   } on FirebaseAuthException catch (e) {
-  //     if (e.code == 'user-not-found') {
-  //       onFail!('Não há usuário registrado com este email');
-  //     } else if (e.code == 'wrong-password') {
-  //       onFail!('A senha informada não confere');
-  //     } else if (e.code == 'invalid-email') {
-  //       onFail!('O email informado está com formato inválido');
-  //     } else if (e.code == 'user-disabled') {
-  //       onFail!('Email do usuário está desabilitado');
-  //     }
-  //     return Future.value(false);
-  //   }
-  // }
-
-  Future<bool> signUp({
-    UserLocal? userLocal,
-    String? userName,
-    String? email,
-    String? password,
-    Function? onFail,
-    Function? onSuccess,
-  }) async {
+  Future<bool> signUp(
+      {UserLocal? userLocal,
+      String? userName,
+      String? email,
+      String? password,
+      Function? onFail,
+      Function? onSuccess}) async {
     try {
-      // Cria o usuário no Firebase Authentication
       User? user = (await _auth.createUserWithEmailAndPassword(
-        email: userLocal!.email!, // usa o email do userLocal
-        password: password!, // usa a senha fornecida
+        email: userLocal!.email!,
+        password: password!,
       ))
           .user;
+      this.userLocal = userLocal;
+      this.userLocal!.id = user!.uid;
+      saveData();
 
-      // // Atribui o UID gerado pelo Firebase Auth ao userLocal.id
-      // this.userLocal = userLocal;
-      // this.userLocal!.id =
-      //     user!.uid; // aqui o id do Firebase Auth é salvo em userLocal
-      // Define o ID gerado no objeto 'genero'
-      final docRef = _firestore.collection('users').doc();
-      userLocal!.id = docRef.id;
-
-      // Grava o objeto no Firestore com o ID gerado
-      await docRef.set(userLocal.toMap());
-      // Chama o método saveData e aguarda a conclusão
-      bool success = await saveData(); // Aguarda o salvamento no Firestore
-
-      if (success) {
-        // Carrega o usuário atual
-        _loadingCurrentUser(user: user);
-
-        // Chama a função de sucesso
-        onSuccess!();
-
-        return true; // Retorna true se tudo der certo
-      } else {
-        // Se houver erro ao salvar, retorna false
-        onFail!("Erro ao salvar dados do usuário");
-        return false;
-      }
+      _loadingCurrentUser(user: user);
+      onSuccess!();
+      return Future.value(true);
     } on FirebaseAuthException catch (e) {
-      // Trata os possíveis erros do FirebaseAuthException
       if (e.code == 'user-not-found') {
         onFail!('Não há usuário registrado com este email');
       } else if (e.code == 'wrong-password') {
@@ -170,9 +113,66 @@ class UserServices extends ChangeNotifier {
       } else if (e.code == 'user-disabled') {
         onFail!('Email do usuário está desabilitado');
       }
-      return false;
+      return Future.value(false);
     }
   }
+
+  // Future<bool> signUp({
+  //   UserLocal? userLocal,
+  //   String? userName,
+  //   String? email,
+  //   String? password,
+  //   Function? onFail,
+  //   Function? onSuccess,
+  // }) async {
+  //   try {
+  //     // Cria o usuário no Firebase Authentication
+  //     User? user = (await _auth.createUserWithEmailAndPassword(
+  //       email: userLocal!.email!, // usa o email do userLocal
+  //       password: password!, // usa a senha fornecida
+  //     ))
+  //         .user;
+
+  //     // // Atribui o UID gerado pelo Firebase Auth ao userLocal.id
+  //     // this.userLocal = userLocal;
+  //     // this.userLocal!.id =
+  //     //     user!.uid; // aqui o id do Firebase Auth é salvo em userLocal
+  //     // Define o ID gerado no objeto 'genero'
+  //     final docRef = _firestore.collection('users').doc();
+  //     userLocal!.id = docRef.id;
+
+  //     // Grava o objeto no Firestore com o ID gerado
+  //     await docRef.set(userLocal.toMap());
+  //     // Chama o método saveData e aguarda a conclusão
+  //     bool success = await saveData(); // Aguarda o salvamento no Firestore
+
+  //     if (success) {
+  //       // Carrega o usuário atual
+  //       _loadingCurrentUser(user: user);
+
+  //       // Chama a função de sucesso
+  //       onSuccess!();
+
+  //       return true; // Retorna true se tudo der certo
+  //     } else {
+  //       // Se houver erro ao salvar, retorna false
+  //       onFail!("Erro ao salvar dados do usuário");
+  //       return false;
+  //     }
+  //   } on FirebaseAuthException catch (e) {
+  //     // Trata os possíveis erros do FirebaseAuthException
+  //     if (e.code == 'user-not-found') {
+  //       onFail!('Não há usuário registrado com este email');
+  //     } else if (e.code == 'wrong-password') {
+  //       onFail!('A senha informada não confere');
+  //     } else if (e.code == 'invalid-email') {
+  //       onFail!('O email informado está com formato inválido');
+  //     } else if (e.code == 'user-disabled') {
+  //       onFail!('Email do usuário está desabilitado');
+  //     }
+  //     return false;
+  //   }
+  // }
 
   // Future<bool> signUp({
   //   UserLocal? userLocal,
@@ -396,136 +396,136 @@ class UserServices extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<Map<String, dynamic>>> getUserCategorias(
-      UserLocal userlocal) async {
-    List<Map<String, dynamic>> categorias = <Map<String, dynamic>>[];
-    var doc;
-    try {
-      await _firestore
-          .collection('users')
-          .doc(userLocal!.id)
-          .get()
-          .then((value) async {
-        doc = value.data()!;
-        if (doc['categorias'] != null) {
-          List.from(doc['categorias']).forEach((categoria) {
-            categorias.add(categoria);
-          });
-        } else {
-          CategoriaServices categoriaServices = CategoriaServices();
-          dynamic categoriasUser = await categoriaServices.getCategoriaToUser();
-          categorias = categoriasUser;
+  // Future<List<Map<String, dynamic>>> getUserCategorias(
+  //     UserLocal userlocal) async {
+  //   List<Map<String, dynamic>> categorias = <Map<String, dynamic>>[];
+  //   var doc;
+  //   try {
+  //     await _firestore
+  //         .collection('users')
+  //         .doc(userLocal!.id)
+  //         .get()
+  //         .then((value) async {
+  //       doc = value.data()!;
+  //       if (doc['categorias'] != null) {
+  //         List.from(doc['categorias']).forEach((categoria) {
+  //           categorias.add(categoria);
+  //         });
+  //       } else {
+  //         CategoriaServices categoriaServices = CategoriaServices();
+  //         dynamic categoriasUser = await categoriaServices.getCategoriaToUser();
+  //         categorias = categoriasUser;
 
-          return categoriasUser;
-        }
-      });
+  //         return categoriasUser;
+  //       }
+  //     });
 
-      return categorias;
-    } on FirebaseException catch (e) {
-      if (e.code != 'OK') {
-        debugPrint('Problemas ao gravar dados do usuário com a imagem');
-      } else if (e.code == 'ABORTED') {
-        debugPrint('Gravação dos dados do usuário foi abortada');
-      }
-      return categorias;
-    }
-  }
+  //     return categorias;
+  //   } on FirebaseException catch (e) {
+  //     if (e.code != 'OK') {
+  //       debugPrint('Problemas ao gravar dados do usuário com a imagem');
+  //     } else if (e.code == 'ABORTED') {
+  //       debugPrint('Gravação dos dados do usuário foi abortada');
+  //     }
+  //     return categorias;
+  //   }
+  // }
 
   // Adiciona o ID de um item à lista de IDs do usuário
-  Future<void> addItemToUser(String userId, String itemId) async {
-    try {
-      await _firestore.collection('users').doc(userId).update({
-        'itens': FieldValue.arrayUnion([itemId]),
-      });
-    } catch (e) {
-      // Trate o erro aqui
-      print('Erro ao adicionar item ao usuário: $e');
-    }
-  }
+  // Future<void> addItemToUser(String userId, String itemId) async {
+  //   try {
+  //     await _firestore.collection('users').doc(userId).update({
+  //       'itens': FieldValue.arrayUnion([itemId]),
+  //     });
+  //   } catch (e) {
+  //     // Trate o erro aqui
+  //     print('Erro ao adicionar item ao usuário: $e');
+  //   }
+  // }
 
-  // Adiciona o ID de uma categoria à lista de IDs do usuário
-  Future<void> addCategoriaToUser(String userId, String categoriaId) async {
-    try {
-      await _firestore.collection('users').doc(userId).update({
-        'categorias': FieldValue.arrayUnion([categoriaId]),
-      });
-    } catch (e) {
-      // Trate o erro aqui
-      print('Erro ao adicionar categoria ao usuário: $e');
-    }
-  }
+  // // Adiciona o ID de uma categoria à lista de IDs do usuário
+  // Future<void> addCategoriaToUser(String userId, String categoriaId) async {
+  //   try {
+  //     await _firestore.collection('users').doc(userId).update({
+  //       'categorias': FieldValue.arrayUnion([categoriaId]),
+  //     });
+  //   } catch (e) {
+  //     // Trate o erro aqui
+  //     print('Erro ao adicionar categoria ao usuário: $e');
+  //   }
+  // }
 
   // Adiciona o ID de um desejo à lista de IDs do usuário
-  Future<void> addDesejoToUser(String userId, String desejoId) async {
-    try {
-      await _firestore.collection('users').doc(userId).update({
-        'desejos': FieldValue.arrayUnion([desejoId]),
-      });
-    } catch (e) {
-      // Trate o erro aqui
-      print('Erro ao adicionar desejo ao usuário: $e');
-    }
-  }
+  // Future<void> addDesejoToUser(String userId, String desejoId) async {
+  //   try {
+  //     await _firestore.collection('users').doc(userId).update({
+  //       'desejos': FieldValue.arrayUnion([desejoId]),
+  //     });
+  //   } catch (e) {
+  //     // Trate o erro aqui
+  //     print('Erro ao adicionar desejo ao usuário: $e');
+  //   }
+  // }
 
   // Adiciona o ID de uma aquisição à lista de IDs do usuário
-  Future<void> addAquisicaoToUser(String userId, String aquisicaoId) async {
-    try {
-      await _firestore.collection('users').doc(userId).update({
-        'aquisicoes': FieldValue.arrayUnion([aquisicaoId]),
-      });
-    } catch (e) {
-      // Trate o erro aqui
-      print('Erro ao adicionar aquisição ao usuário: $e');
-    }
-  }
+  // Future<void> addAquisicaoToUser(String userId, String aquisicaoId) async {
+  //   try {
+  //     await _firestore.collection('users').doc(userId).update({
+  //       'aquisicoes': FieldValue.arrayUnion([aquisicaoId]),
+  //     });
+  //   } catch (e) {
+  //     // Trate o erro aqui
+  //     print('Erro ao adicionar aquisição ao usuário: $e');
+  //   }
+  // }
 
   // Remove o ID de um item da lista de IDs do usuário
-  Future<void> removeItemFromUser(String userId, String itemId) async {
-    try {
-      await _firestore.collection('users').doc(userId).update({
-        'itens': FieldValue.arrayRemove([itemId]),
-      });
-    } catch (e) {
-      // Trate o erro aqui
-      print('Erro ao remover item do usuário: $e');
-    }
-  }
+  // Future<void> removeItemFromUser(String userId, String itemId) async {
+  //   try {
+  //     await _firestore.collection('users').doc(userId).update({
+  //       'itens': FieldValue.arrayRemove([itemId]),
+  //     });
+  //   } catch (e) {
+  //     // Trate o erro aqui
+  //     print('Erro ao remover item do usuário: $e');
+  //   }
+  // }
 
   // Remove o ID de uma categoria da lista de IDs do usuário
-  Future<void> removeCategoriaFromUser(
-      String userId, String categoriaId) async {
-    try {
-      await _firestore.collection('users').doc(userId).update({
-        'categorias': FieldValue.arrayRemove([categoriaId]),
-      });
-    } catch (e) {
-      // Trate o erro aqui
-      print('Erro ao remover categoria do usuário: $e');
-    }
-  }
+  // Future<void> removeCategoriaFromUser(
+  //     String userId, String categoriaId) async {
+  //   try {
+  //     await _firestore.collection('users').doc(userId).update({
+  //       'categorias': FieldValue.arrayRemove([categoriaId]),
+  //     });
+  //   } catch (e) {
+  //     // Trate o erro aqui
+  //     print('Erro ao remover categoria do usuário: $e');
+  //   }
+  // }
 
-  // Remove o ID de um desejo da lista de IDs do usuário
-  Future<void> removeDesejoFromUser(String userId, String desejoId) async {
-    try {
-      await _firestore.collection('users').doc(userId).update({
-        'desejos': FieldValue.arrayRemove([desejoId]),
-      });
-    } catch (e) {
-      // Trate o erro aqui
-      print('Erro ao remover desejo do usuário: $e');
-    }
-  }
+  // // Remove o ID de um desejo da lista de IDs do usuário
+  // Future<void> removeDesejoFromUser(String userId, String desejoId) async {
+  //   try {
+  //     await _firestore.collection('users').doc(userId).update({
+  //       'desejos': FieldValue.arrayRemove([desejoId]),
+  //     });
+  //   } catch (e) {
+  //     // Trate o erro aqui
+  //     print('Erro ao remover desejo do usuário: $e');
+  //   }
+  // }
 
-  // Remove o ID de uma aquisição da lista de IDs do usuário
-  Future<void> removeAquisicaoFromUser(
-      String userId, String aquisicaoId) async {
-    try {
-      await _firestore.collection('users').doc(userId).update({
-        'aquisicoes': FieldValue.arrayRemove([aquisicaoId]),
-      });
-    } catch (e) {
-      // Trate o erro aqui
-      print('Erro ao remover aquisição do usuário: $e');
-    }
-  }
+  // // Remove o ID de uma aquisição da lista de IDs do usuário
+  // Future<void> removeAquisicaoFromUser(
+  //     String userId, String aquisicaoId) async {
+  //   try {
+  //     await _firestore.collection('users').doc(userId).update({
+  //       'aquisicoes': FieldValue.arrayRemove([aquisicaoId]),
+  //     });
+  //   } catch (e) {
+  //     // Trate o erro aqui
+  //     print('Erro ao remover aquisição do usuário: $e');
+  //   }
+  // }
 }

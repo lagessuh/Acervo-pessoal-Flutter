@@ -3,6 +3,7 @@ import 'dart:convert';
 
 //import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:acervo/models/categoria.dart';
+import 'package:acervo/models/userlocal.dart';
 //import 'package:flutter/material.dart';
 
 class Desejo {
@@ -12,6 +13,7 @@ class Desejo {
   Categoria? categoria = Categoria();
   String? data;
   String? status;
+  UserLocal? userlocal = UserLocal();
   //Group({
   // required this.id,
   // required this.description,
@@ -22,7 +24,13 @@ class Desejo {
 
   //-- método construtor
   Desejo(
-      {this.id, this.nome, this.autor, this.categoria, this.data, this.status});
+      {this.id,
+      this.nome,
+      this.autor,
+      this.categoria,
+      this.data,
+      this.status,
+      this.userlocal});
 
   Desejo copyWith(
       {String? id,
@@ -30,7 +38,8 @@ class Desejo {
       String? autor,
       Categoria? categoria,
       String? data,
-      String? status}) {
+      String? status,
+      UserLocal? userlocal}) {
     return Desejo(
       id: id ?? this.id,
       nome: nome ?? this.nome,
@@ -38,6 +47,7 @@ class Desejo {
       categoria: categoria ?? this.categoria,
       data: data ?? this.data,
       status: status ?? this.status,
+      userlocal: userlocal ?? this.userlocal,
     );
   }
 
@@ -50,6 +60,7 @@ class Desejo {
       'categoria': categoria?.toMapCategoriaDesejos(),
       'data': data,
       'status': status,
+      'userlocal': userlocal?.toJsonUser(),
     };
   }
 
@@ -64,6 +75,9 @@ class Desejo {
       autor: map['autor'] != null ? map['autor'] as String : null,
       status: map['status'] != null ? map['status'] as String : null,
       data: map['data'] != null ? map['data'] as String : null,
+      userlocal: map['userlocal'] != null
+          ? UserLocal.fromMap(map['userlocal'] as Map<String, dynamic>)
+          : null,
     );
   }
 
@@ -87,7 +101,7 @@ class Desejo {
 
   @override
   String toString() =>
-      'Desejo(id: $id, nome: $nome, autor: $autor, categoria: $categoria, data: $data, status: $status)';
+      'Desejo(id: $id, nome: $nome, autor: $autor, categoria: $categoria, data: $data, status: $status, userlocal: $userlocal)';
 
   @override
   bool operator ==(covariant Desejo other) {
@@ -98,7 +112,8 @@ class Desejo {
         other.autor == autor &&
         other.categoria == categoria &&
         other.status == status &&
-        other.data == data;
+        other.data == data &&
+        other.userlocal == userlocal;
   }
 
   @override
@@ -108,5 +123,6 @@ class Desejo {
       autor.hashCode ^
       categoria.hashCode ^
       data.hashCode ^
-      status.hashCode;
+      status.hashCode ^
+      userlocal.hashCode;
 }

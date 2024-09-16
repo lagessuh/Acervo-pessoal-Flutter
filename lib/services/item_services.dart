@@ -64,9 +64,7 @@ class ItemServices {
 
       // Preencher o userlocal com os dados do usuário logado
       item!.userlocal = UserLocal(
-        id: currentUser.uid,
-        userName: currentUser.displayName ??
-            'Usuário desconhecido', // ou outro dado relevante
+        id: currentUser.uid, // ou outro dado relevante
       );
 
       // Cria um documento com um ID gerado automaticamente
@@ -207,7 +205,8 @@ class ItemServices {
     try {
       final collectionRef = _firestore.collection('itens');
       final snapshot =
-          await collectionRef.orderBy('data', descending: true).limit(10).get();
+          // await collectionRef.orderBy('data', descending: true).limit(10).get();
+          await collectionRef.limit(10).get();
 
       if (snapshot.docs.isEmpty) {
         print("Nenhum item encontrado. A coleção pode ainda não existir.");

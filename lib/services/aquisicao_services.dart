@@ -1,5 +1,7 @@
+import 'package:acervo/models/userlocal.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:acervo/models/aquisicao.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
 class AquisicaoServices {
@@ -26,6 +28,18 @@ class AquisicaoServices {
 
   Future<bool> addAquisicao({Aquisicao? aquisicao}) async {
     try {
+      User? currentUser = FirebaseAuth.instance.currentUser;
+
+      if (currentUser == null) {
+        // Caso o usuário não esteja logado, retorna false
+        print('Usuário não logado');
+        return Future.value(false);
+      }
+
+      // Preencher o userlocal com os dados do usuário logado
+      aquisicao!.userlocal = UserLocal(
+        id: currentUser.uid, // ou outro dado relevante
+      );
       // Cria um documento com um ID gerado automaticamente
       final docRef = _firestore.collection('aquisicoes').doc();
 

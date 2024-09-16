@@ -4,13 +4,25 @@
 //id, local de aquisição
 
 //método construtor
+import 'package:acervo/models/userlocal.dart';
+
 class Aquisicao {
   String? id;
   String? nome;
+  UserLocal? userlocal = UserLocal();
   Aquisicao({
     this.id,
     this.nome,
+    this.userlocal,
   });
+
+  Aquisicao copyWith({String? id, String? nome, UserLocal? userlocal}) {
+    return Aquisicao(
+      id: id ?? this.id,
+      nome: nome ?? this.nome,
+      userlocal: userlocal ?? this.userlocal,
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -23,6 +35,7 @@ class Aquisicao {
     return {
       'id': id,
       'nome': nome,
+      'userlocal': userlocal?.toJsonUser(),
     };
   }
 
@@ -34,6 +47,9 @@ class Aquisicao {
     return Aquisicao(
       id: map['id'] != null ? map['id'] as String : null,
       nome: map['nome'] != null ? map['nome'] as String : null,
+      userlocal: map['userlocal'] != null
+          ? UserLocal.fromMap(map['userlocal'] as Map<String, dynamic>)
+          : null,
     );
   }
 

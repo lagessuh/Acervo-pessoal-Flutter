@@ -16,6 +16,12 @@ class ProfilePage extends StatelessWidget {
         child: SingleChildScrollView(
           child: Consumer<UserServices>(
             builder: (context, userServices, child) {
+              // final user = userServices.getUser;
+              // if (user == null) {
+              //   return const Center(
+              //     child: CircularProgressIndicator(),
+              //   );
+              // }
               return Column(
                 children: [
                   Text(
@@ -80,6 +86,7 @@ class ProfilePage extends StatelessWidget {
                                       Text(
                                         // context.read<UserServices>().getUser!.userName!,
                                         '${userServices.getUser!.userName}',
+                                        // '${user.userName}',
                                         style: TextStyle(
                                             fontSize:
                                                 Responsive.isDesktop(context)
@@ -93,6 +100,7 @@ class ProfilePage extends StatelessWidget {
                                       ),
                                       Text(
                                         '${userServices.getUser!.email}',
+                                        // '${user.email}',
                                         style: TextStyle(
                                             fontSize:
                                                 Responsive.isDesktop(context)
