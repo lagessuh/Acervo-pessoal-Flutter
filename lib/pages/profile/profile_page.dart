@@ -171,74 +171,74 @@ class ProfilePage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  Container(
-                    decoration: const BoxDecoration(boxShadow: [
-                      BoxShadow(
-                        color: Color.fromARGB(255, 223, 223, 223),
-                        offset: Offset(
-                          1.0,
-                          1.0,
-                        ),
-                        blurRadius: 7.0,
-                        spreadRadius: 1.0,
-                      ),
-                    ]),
-                    child: Card(
-                      elevation: .5,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        const ProfileEditPage()));
-                              },
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.account_box_rounded),
-                                  const SizedBox(
-                                    width: 15,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Dados da conta',
-                                        style: TextStyle(
-                                            fontSize:
-                                                Responsive.isDesktop(context)
-                                                    ? 14
-                                                    : 12,
-                                            fontWeight: FontWeight.w800,
-                                            fontFamily: 'Poppins'),
-                                      ),
-                                      Text(
-                                        'Alterar senha, bloquear conta',
-                                        style: TextStyle(
-                                            fontSize:
-                                                Responsive.isDesktop(context)
-                                                    ? 14
-                                                    : 12,
-                                            fontWeight: FontWeight.w200,
-                                            fontFamily: 'Poppins'),
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                        ],
-                      ),
-                    ),
-                  )
+                  // Container(
+                  //   decoration: const BoxDecoration(boxShadow: [
+                  //     BoxShadow(
+                  //       color: Color.fromARGB(255, 223, 223, 223),
+                  //       offset: Offset(
+                  //         1.0,
+                  //         1.0,
+                  //       ),
+                  //       blurRadius: 7.0,
+                  //       spreadRadius: 1.0,
+                  //     ),
+                  //   ]),
+                  //   child: Card(
+                  //     elevation: .5,
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(3),
+                  //     ),
+                  //     child: Column(
+                  //       children: [
+                  //         Padding(
+                  //           padding: const EdgeInsets.all(20.0),
+                  //           child: InkWell(
+                  //             onTap: () {
+                  //               Navigator.of(context).push(MaterialPageRoute(
+                  //                   builder: (context) =>
+                  //                       const ProfileEditPage()));
+                  //             },
+                  //             child: Row(
+                  //               children: [
+                  //                 const Icon(Icons.account_box_rounded),
+                  //                 const SizedBox(
+                  //                   width: 15,
+                  //                 ),
+                  //                 Column(
+                  //                   crossAxisAlignment:
+                  //                       CrossAxisAlignment.start,
+                  //                   children: [
+                  //                     Text(
+                  //                       'Dados da conta',
+                  //                       style: TextStyle(
+                  //                           fontSize:
+                  //                               Responsive.isDesktop(context)
+                  //                                   ? 14
+                  //                                   : 12,
+                  //                           fontWeight: FontWeight.w800,
+                  //                           fontFamily: 'Poppins'),
+                  //                     ),
+                  //                     Text(
+                  //                       'Alterar senha, bloquear conta',
+                  //                       style: TextStyle(
+                  //                           fontSize:
+                  //                               Responsive.isDesktop(context)
+                  //                                   ? 14
+                  //                                   : 12,
+                  //                           fontWeight: FontWeight.w200,
+                  //                           fontFamily: 'Poppins'),
+                  //                     )
+                  //                   ],
+                  //                 )
+                  //               ],
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         const SizedBox(height: 20),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // )
                 ],
               );
             },

@@ -1,4 +1,4 @@
-import 'package:acervo/services/categoria_services.dart';
+//import 'package:acervo/services/categoria_services.dart';
 import 'package:acervo/utils/exceptions/my_firebase_exceptions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:acervo/models/userlocal.dart';
@@ -104,14 +104,18 @@ class UserServices extends ChangeNotifier {
       onSuccess!();
       return Future.value(true);
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        onFail!('Não há usuário registrado com este email');
-      } else if (e.code == 'wrong-password') {
-        onFail!('A senha informada não confere');
+      if (e.code == 'email-already-in-use') {
+        onFail!('Este email já está cadastrado');
       } else if (e.code == 'invalid-email') {
         onFail!('O email informado está com formato inválido');
+      } else if (e.code == 'weak-password') {
+        onFail!('A senha é muito fraca');
       } else if (e.code == 'user-disabled') {
-        onFail!('Email do usuário está desabilitado');
+        onFail!('Este usuário foi desativado');
+      } else if (e.code == 'operation-not-allowed') {
+        onFail!('A operação não é permitida');
+      } else {
+        onFail!('Erro ao criar conta: ${e.message}');
       }
       return Future.value(false);
     }

@@ -3,7 +3,7 @@
 import 'dart:convert';
 
 import 'package:acervo/models/userlocal.dart';
-import 'package:flutter/foundation.dart';
+//import 'package:flutter/foundation.dart';
 
 class Categoria {
   String? id;
