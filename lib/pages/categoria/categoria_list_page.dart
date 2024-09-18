@@ -124,10 +124,34 @@ class _CategoriaListPageState extends State<CategoriaListPage> {
                                   children: [
                                     Column(
                                       children: [
+                                        // InkWell(
+                                        //   onTap: () {
+                                        //     categoriaServices
+                                        //         .deleteCategoria(ds.id);
+                                        //   },
+                                        //   child: const Icon(
+                                        //     Icons.delete,
+                                        //     color: Colors.red,
+                                        //     size: 30,
+                                        //   ),
+                                        // ),
                                         InkWell(
-                                          onTap: () {
-                                            categoriaServices
-                                                .deleteCategoria(ds.id);
+                                          onTap: () async {
+                                            try {
+                                              await categoriaServices
+                                                  .deleteCategoria(
+                                                      ds.id, context);
+                                            } catch (e) {
+                                              // Mostra uma mensagem de erro para o usuário
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                      'Erro ao excluir categoria: ${e.toString()}'),
+                                                  backgroundColor: Colors.red,
+                                                ),
+                                              );
+                                            }
                                           },
                                           child: const Icon(
                                             Icons.delete,
@@ -135,6 +159,7 @@ class _CategoriaListPageState extends State<CategoriaListPage> {
                                             size: 30,
                                           ),
                                         ),
+
                                         InkWell(
                                           onTap: () {
                                             categoria.id = ds.id;

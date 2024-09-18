@@ -4,6 +4,7 @@ import 'package:acervo/models/categoria.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class CategoriaServices {
   //obter uma referência (instância) do firebase (cloudfirestore)
@@ -73,8 +74,63 @@ class CategoriaServices {
         .set(categorias.toMapCategoria());
   }
 
-  Future deleteCategoria(String id) async {
-    return _firestore.collection('categorias').doc(id).delete();
+  // Future deleteCategoria(String id) async {
+  //   return _firestore.collection('categorias').doc(id).delete();
+  // }
+  // Future<void> deleteCategoria(String categoriaId) async {
+  //   try {
+  //     // Verifique se há algum item que usa essa categoria
+  //     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+  //         .collection('itens')
+  //         .where('categoria.id', isEqualTo: categoriaId)
+  //         .get();
+
+  //     if (querySnapshot.docs.isNotEmpty) {
+  //       throw Exception('Esta categoria está vinculada a um ou mais itens.');
+  //     }
+
+  //     // Caso não tenha itens vinculados, pode prosseguir com a exclusão
+  //     await FirebaseFirestore.instance
+  //         .collection('categorias')
+  //         .doc(categoriaId)
+  //         .delete();
+  //   } catch (e) {
+  //     print('Erro ao excluir categoria: $e');
+  //   }
+  // }
+  Future<void> deleteCategoria(String categoriaId, BuildContext context) async {
+    try {
+      // Verifique se há algum item que usa essa categoria
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('itens')
+          .where('categoria.id', isEqualTo: categoriaId)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        throw Exception('Esta categoria está vinculada a um ou mais itens.');
+      }
+
+      // Caso não tenha itens vinculados, pode prosseguir com a exclusão
+      await FirebaseFirestore.instance
+          .collection('categorias')
+          .doc(categoriaId)
+          .delete();
+
+      // Exibir mensagem de sucesso ao usuário
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Categoria excluída com sucesso!'),
+        ),
+      );
+    } catch (e) {
+      // Exibir mensagem de erro ao usuário
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   Future<QuerySnapshot<Map<String, dynamic>>> getAllCategorias(
