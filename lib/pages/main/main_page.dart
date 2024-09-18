@@ -66,7 +66,7 @@ class _MainPageState extends State<MainPage> {
           ),
           NavigationDestination(
             icon: Icon(Icons.person),
-            label: 'Profile',
+            label: 'Perfil',
           ),
         ],
       ),
